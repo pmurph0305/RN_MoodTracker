@@ -10,13 +10,15 @@ export default class TagList extends React.Component {
   }
 
   render() {
+    let { tags, selectedTags } = this.props;
     return (
       <View style={styles.container}>
-        {this.props.tags.map((tag, index) => {
+        {tags.map((tag, index) => {
           return (
             <TagContainer
               key={"tag_" + tag.id}
               tag={tag}
+              isSelected={selectedTags.includes(tag.id)}
               onIconPress={id => this.props.onIconPress(id)}
             />
           );

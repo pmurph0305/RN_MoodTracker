@@ -4,26 +4,50 @@ import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 export default class TagContainer extends React.Component {
   getIconForTag = tag => {
+    let color = this.props.isSelected ? "white" : "black";
     switch (tag.IconType) {
       case "FontAwesome":
         return (
-          <FontAwesome style={styles.icon} size={24} name={tag.IconName} />
+          <FontAwesome
+            style={styles.icon}
+            size={24}
+            name={tag.IconName}
+            color={color}
+          />
         );
       case "Feather":
-        return <Feather style={styles.icon} size={24} name={tag.IconName} />;
+        return (
+          <Feather
+            style={styles.icon}
+            size={24}
+            name={tag.IconName}
+            color={color}
+          />
+        );
       case "MaterialIcons":
         return (
-          <MaterialIcons style={styles.icon} size={24} name={tag.IconName} />
+          <MaterialIcons
+            style={styles.icon}
+            size={24}
+            name={tag.IconName}
+            color={color}
+          />
         );
     }
   };
 
+  getFillColor = isSelected => {
+    return { backgroundColor: isSelected ? "black" : "white" };
+  };
+
   render() {
-    let { tag, onIconPress } = this.props;
+    let { tag, onIconPress, isSelected } = this.props;
     return (
       <TouchableWithoutFeedback onPress={() => onIconPress(tag.id)}>
         <View style={styles.container}>
-          <View style={styles.iconContainer}>{this.getIconForTag(tag)}</View>
+          <View style={[styles.iconContainer, this.getFillColor(isSelected)]}>
+            {this.getIconForTag(tag)}
+          </View>
           <Text>{tag.DisplayName}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -43,8 +67,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   iconContainer: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

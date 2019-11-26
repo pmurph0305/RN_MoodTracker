@@ -155,6 +155,7 @@ export default class HomeScreen extends React.Component {
           }
         />
         <TagList
+          selectedTags={[0, 1, 5]}
           tags={this.state.tags}
           onIconPress={data => this.onIconPress(data)}
         />
