@@ -3,6 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { Card } from "react-native-elements";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 
+import IconContainer from "../IconContainer/IconContainer";
+
 const fontAwesomeIcons = [
   "glass",
   "music",
@@ -49,35 +51,44 @@ export default class IconList extends React.Component {
   }
 
   render() {
-    return (
-      <Card wrapperStyle={styles.wrapper}>
-        {fontAwesomeIcons.map((iconName, index) => {
-          return (
-            <FontAwesome
-              key={"fa_" + index}
-              style={styles.icon}
-              size={32}
-              name={iconName}
-              onPress={() => {
-                console.log("press; fa_" + index);
-                this.props.onIconPress("fa_" + index);
-              }}
-            />
-          );
-        })}
-      </Card>
-    );
+    console.log("TAGS", this.props.tags);
+    if (!this.props.tags || this.props.tags.length === 0) {
+      return (
+        <Card wrapperStyle={styles.wrapper}>
+          {fontAwesomeIcons.map((iconName, index) => {
+            return (
+              <FontAwesome
+                key={"fa_" + index}
+                style={styles.icon}
+                size={32}
+                name={iconName}
+                onPress={() => {
+                  console.log("press; fa_" + index);
+                  this.props.onIconPress("fa_" + index);
+                }}
+              />
+            );
+          })}
+        </Card>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          {this.props.tags.map((tag, index) => {
+            return <IconContainer key={"tag_" + tag.id} tag={tag} />;
+          })}
+        </View>
+      );
+    }
   }
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
+  container: {
     flex: 1,
     flexWrap: "wrap",
     flexDirection: "row",
-    backgroundColor: "#fff",
-    justifyContent: "flex-start",
-    padding: 0
+    justifyContent: "center"
   },
   icon: { marginRight: 10, padding: 10 }
 });

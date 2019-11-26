@@ -7,21 +7,30 @@ import { Header } from "react-native-elements";
 import DateNavHeader from "../components/DateNavHeader/DateNavHeader";
 
 import * as SQLite from "expo-sqlite";
-// import SQLite from "react-native-sqlite-storage";
-// Using promises.
-// SQLite.enablePromise(true);
-const db = SQLite.openDatabase("MoodDB.db", "0", "Mood Database");
 
+import Database from "../database/database";
+
+const dbClass = new Database();
+const db = dbClass.db;
+// const dbClass = new Database();
+// const db = dbClass.getDatabase();
+//const db = database.getDatabase();
 const data = [
   {
     date: "November 24 2019",
     tags: "Relax, Games, Programming",
-    rating: 45
+    rating: 45,
+    note: "good day"
   },
   {
     date: "November 25 2019",
     tags: "Relax, Games",
     rating: 55
+  },
+  {
+    date: "November 26 2019",
+    tags: "Games, TV",
+    rating: 75
   }
 ];
 
@@ -32,7 +41,8 @@ export default class HomeScreen extends React.Component {
     this.state = {
       success: false,
       error: false,
-      moods: []
+      moods: [],
+      tags: []
     };
   }
 
@@ -48,8 +58,8 @@ export default class HomeScreen extends React.Component {
     db.transaction(
       tx => {
         tx.executeSql(
-          "insert into moods (rating, date, tags) values (?, ?, ?);",
-          [item.rating, item.date, item.tags],
+          "insert into moods (rating, date, tags, note) values (?, ?, ?, ?);",
+          [item.rating, item.date, item.tags, item.note],
           success => {
             console.log("Success insert:" + item.date);
           },
@@ -86,6 +96,7 @@ export default class HomeScreen extends React.Component {
         console.log(result.rows);
       });
     });
+    //dbClass.getTags();
   };
 
   dropCreatePopulateDB = () => {
@@ -100,7 +111,7 @@ export default class HomeScreen extends React.Component {
           db.transaction(
             tx => {
               tx.executeSql(
-                "create table if not exists moods (id integer primary key not null, rating int, date text, tags text);"
+                "create table if not exists moods (id integer primary key not null, rating int, date text, tags text, note text);"
               );
             },
             null,
@@ -116,6 +127,10 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.dropCreatePopulateDB();
+    dbClass.seedDatabase();
+    dbClass.getTags().then(result => {
+      this.setState({ tags: result });
+    });
   }
 
   onIconPress = iconName => {
@@ -139,7 +154,10 @@ export default class HomeScreen extends React.Component {
             />
           }
         />
-        <IconsList onIconPress={data => this.onIconPress(data)} />
+        <IconsList
+          tags={this.state.tags}
+          onIconPress={data => this.onIconPress(data)}
+        />
         <MoodsList moods={moods} />
         <Text>Home Screen</Text>
         <Button
@@ -150,6 +168,7 @@ export default class HomeScreen extends React.Component {
         <Text>{new Date().toDateString()}</Text>
         <Text>{this.state.success ? "SUCCESS" : "NOT S"}</Text>
         <Text>{this.state.error ? "ERROR" : "NOT E"}</Text>
+        <Text>AHHH </Text>
       </ScrollView>
     );
   }
