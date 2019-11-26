@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ScrollView, Text, Button, StyleSheet } from "react-native";
 import MoodsList from "../components/MoodList/MoodList.js";
-import IconsList from "../components/IconsList/IconsList.js";
+import TagList from "../components/TagList/TagList.js";
 import { Header } from "react-native-elements";
 
 import DateNavHeader from "../components/DateNavHeader/DateNavHeader";
@@ -154,7 +154,7 @@ export default class HomeScreen extends React.Component {
             />
           }
         />
-        <IconsList
+        <TagList
           tags={this.state.tags}
           onIconPress={data => this.onIconPress(data)}
         />
@@ -168,7 +168,13 @@ export default class HomeScreen extends React.Component {
         <Text>{new Date().toDateString()}</Text>
         <Text>{this.state.success ? "SUCCESS" : "NOT S"}</Text>
         <Text>{this.state.error ? "ERROR" : "NOT E"}</Text>
-        <Text>AHHH </Text>
+        <Text
+          onPress={() => {
+            console.log("press");
+          }}
+        >
+          AHHH{" "}
+        </Text>
       </ScrollView>
     );
   }
