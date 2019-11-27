@@ -5,13 +5,13 @@ import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 export default class TagContainer extends React.Component {
   getIconForTag = tag => {
     let color = this.props.isSelected ? "white" : "black";
-    switch (tag.IconType) {
+    switch (tag.iconType) {
       case "FontAwesome":
         return (
           <FontAwesome
             style={styles.icon}
             size={24}
-            name={tag.IconName}
+            name={tag.iconName}
             color={color}
           />
         );
@@ -20,7 +20,7 @@ export default class TagContainer extends React.Component {
           <Feather
             style={styles.icon}
             size={24}
-            name={tag.IconName}
+            name={tag.iconName}
             color={color}
           />
         );
@@ -29,7 +29,7 @@ export default class TagContainer extends React.Component {
           <MaterialIcons
             style={styles.icon}
             size={24}
-            name={tag.IconName}
+            name={tag.iconName}
             color={color}
           />
         );
@@ -48,7 +48,7 @@ export default class TagContainer extends React.Component {
           <View style={[styles.iconContainer, this.getFillColor(isSelected)]}>
             {this.getIconForTag(tag)}
           </View>
-          <Text>{tag.DisplayName}</Text>
+          <Text>{tag.displayName}</Text>
         </View>
       </TouchableWithoutFeedback>
     );

@@ -2,6 +2,8 @@ import React, { StrictMode } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Card, ListItem, Button } from "react-native-elements";
 
+import MoodCardTag from "../MoodCardTag/MoodCardTag";
+
 export default class MoodList extends React.Component {
   constructor(props) {
     super(props);
@@ -34,8 +36,18 @@ export default class MoodList extends React.Component {
         ></View>
         <View style={styles.dataContainer}>
           <Text style={styles.date}>{mood.date}</Text>
-          <Text>{mood.tags}</Text>
-          {mood.note && <Text>{mood.note}</Text>}
+          <View style={styles.tagContainer}>
+            {mood.tags.map((tag, index) => {
+              if (index < 3) {
+                return (
+                  <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />
+                );
+              } else {
+                return <Text key={mood.id + "_extra"}>...</Text>;
+              }
+            })}
+          </View>
+          {mood.note && <Text style={styles.note}>{mood.note}</Text>}
         </View>
       </Card>
     );
@@ -48,7 +60,9 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   dataContainer: {
-    paddingLeft: 10
+    paddingLeft: 10,
+    flex: 1,
+    flexDirection: "column"
   },
   date: {
     fontSize: 16
@@ -61,5 +75,15 @@ const styles = StyleSheet.create({
   },
   another: {
     backgroundColor: "green"
+  },
+  tagContainer: {
+    paddingTop: 5,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap"
+  },
+  note: {
+    paddingTop: 5
   }
 });

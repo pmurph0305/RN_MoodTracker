@@ -58,12 +58,20 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     // display a loading bar of some sort while initial query goes.
-    db.executeSql("DROP TABLE IF EXISTS TAGS")
-      .then(() => {
-        return db.reseedDatabase().then(r => {
-          return db.getMoods().then(result => {
-            this.setState({ moods: result._array, isLoadingData: false });
-          });
+    // db.executeSql("DROP TABLE IF EXISTS TAGS")
+    //   .then(() => {
+    //     return db.reseedDatabase().then(r => {
+    //       return db.getMoods().then(result => {
+    //         this.setState({ moods: result._array, isLoadingData: false });
+    //       });
+    //     });
+    //   })
+    //   .catch(error => console.log("Error dropping tags", error));
+    db.reseedDatabase()
+      .then(r => {
+        return db.getMoodsWithTags().then(result => {
+          //console.log("RESULT", result._array);
+          this.setState({ moods: result._array, isLoadingData: false });
         });
       })
       .catch(error => console.log("Error dropping tags", error));
@@ -71,6 +79,16 @@ export default class HomeScreen extends React.Component {
 
   onPressDateNav = change => {
     console.log("Month Change:" + change);
+  };
+
+  executeTestQueries = () => {
+    db.getMoodsWithTags()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(error => {
+        console.log("ERROR", error);
+      });
   };
 
   render() {
@@ -97,6 +115,7 @@ export default class HomeScreen extends React.Component {
         )}
 
         <MoodsList moods={moods} />
+        <Button title="test query" onPress={() => this.executeTestQueries()} />
         <Button title="Log data" onPress={() => this.logData()} />
       </ScrollView>
     );

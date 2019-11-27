@@ -3,19 +3,25 @@ import * as SQLite from "expo-sqlite";
 const moodData = [
   {
     date: "November 24 2019",
-    tags: "Relax, Games, Programming",
+    tags: [8, 1, 2],
     rating: 45,
     note: "good day"
   },
   {
     date: "November 25 2019",
-    tags: "Relax, Games",
+    tags: [3, 12, 5],
     rating: 55
   },
   {
     date: "November 26 2019",
-    tags: "Games, TV",
+    tags: [1, 4, 3],
     rating: 75
+  },
+  {
+    date: "November 23 2019",
+    tags: [3, 13, 8, 9],
+    rating: 21,
+    note: "bad day"
   }
 ];
 
@@ -48,77 +54,125 @@ export default class Database {
 
   insertTag = (iconType, iconData) => {
     return this.executeSql(
-      "INSERT OR IGNORE INTO tags(IconType, IconName, DisplayName) VALUES (?, ?, ?);",
+      "INSERT OR IGNORE INTO tags(iconType, iconName, displayName) VALUES (?, ?, ?);",
       [iconType, iconData.iconName, iconData.displayName]
     );
   };
 
   seedTags = () => {
-    return this.executeSql(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='tags';",
-      []
-    ).then(result => {
-      if (result.length === 0) {
-        return this.executeSql(
-          "CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY NOT NULL, IconType TEXT, IconName TEXT, DisplayName TEXT NOT NULL UNIQUE);"
-        ).then(() => {
-          console.log("Successfully recreated tags table");
-          let promises = [];
-          fontAwesomeIcons.forEach(icon => {
-            promises.push(this.insertTag("FontAwesome", icon));
-          });
-          materialIcons.forEach(icon => {
-            promises.push(this.insertTag("MaterialIcons", icon));
-          });
-          featherIcons.forEach(icon => {
-            promises.push(this.insertTag("Feather", icon));
-          });
-          return Promise.all(promises).then(() => {
-            console.log("Successfully reinserted all tags");
-            return new Promise.resolve("All reinserting of tags completed");
-          });
-        });
-      } else {
-        return new Promise.resolve("No need to reseed tag table.");
-      }
+    console.log("Seeding tags...");
+    let promises = [];
+    fontAwesomeIcons.forEach(icon => {
+      promises.push(this.insertTag("FontAwesome", icon));
+    });
+    materialIcons.forEach(icon => {
+      promises.push(this.insertTag("MaterialIcons", icon));
+    });
+    featherIcons.forEach(icon => {
+      promises.push(this.insertTag("Feather", icon));
+    });
+    return Promise.all(promises)
+      .then(() => {
+        return Promise.resolve("All reinserting of tags completed");
+      })
+      .catch(error => {
+        console.log("Error with all seed promises", error);
+      });
+  };
+
+  seedMoods = () => {
+    console.log("Seeding moods...");
+    let promises = [];
+    moodData.forEach(mood => {
+      promises.push(this.insertMood(mood));
+    });
+    return Promise.all(promises).then(() => {
+      return Promise.resolve("Succesfully reseeded moods");
     });
   };
 
-  dropThenSeedMoods = () => {
-    return this.executeSql("DROP TABLE IF EXISTS moods;").then(() => {
-      console.log("Successfully dropped moods table");
-      return this.executeSql(
-        "CREATE TABLE IF NOT EXISTS moods (id INTEGER PRIMARY KEY NOT NULL, rating INT, date TEXT, tags TEXT, note TEXT);"
-      ).then(() => {
-        console.log("Successfully created moods table");
+  insertMood = mood => {
+    return this.executeFullSql(
+      "INSERT INTO moods (rating, date, note) VALUES (?, ?, ?);",
+      [mood.rating, mood.date, mood.note]
+    )
+      .then(result => {
         let promises = [];
-        moodData.forEach(item => {
+        mood.tags.forEach(tag => {
           promises.push(
             this.executeSql(
-              "insert into moods (rating, date, tags, note) values (?, ?, ?, ?);",
-              [item.rating, item.date, item.tags, item.note]
+              "INSERT INTO tagmap (moodId, tagId) VALUES (?, ?);",
+              [result.insertId, tag]
             )
           );
         });
         return Promise.all(promises).then(() => {
-          console.log("Successfully reseeded moods table");
-          return new Promise.resolve("Succesfully reseeded moods");
+          return Promise.resolve();
         });
+      })
+      .catch(error => {
+        console.log("ERROR", error);
+      });
+  };
+
+  insertTagMap = (moodId, tagId) => {};
+
+  deleteAllTables = () => {
+    return this.executeSql("drop table if exists moods;").then(() => {
+      return this.executeSql("drop table if exists tags;").then(() => {
+        return this.executeSql("drop table if exists tagmap;");
+      });
+    });
+  };
+
+  createAllTables = () => {
+    return this.executeSql(
+      "CREATE TABLE IF NOT EXISTS moods (id INTEGER PRIMARY KEY NOT NULL, rating INT, date TEXT, note TEXT);"
+    ).then(() => {
+      return this.executeSql(
+        "CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY NOT NULL, iconType TEXT, iconName TEXT, displayName TEXT NOT NULL UNIQUE);"
+      ).then(() => {
+        return this.executeSql(
+          "CREATE TABLE IF NOT EXISTS tagmap(id INTEGER PRIMARY KEY NOT NULL, moodId INTEGER, tagId INTEGER, FOREIGN KEY(moodId) REFERENCES moods(id), FOREIGN KEY(tagId) REFERENCES tags(id));"
+        );
       });
     });
   };
 
   reseedDatabase = () => {
     console.log("Reseeding database...");
-    return this.seedTags()
-      .then(r => {
-        return this.dropThenSeedMoods().then(r => {
-          return new Promise.resolve("Succesfully reseeded");
+    return this.deleteAllTables()
+      .then(() => {
+        console.log("Deleted all tables");
+        return this.createAllTables().then(() => {
+          console.log("Recreated all tables");
+          return this.seedTags().then(() => {
+            console.log("Reseeded Tags");
+            return this.seedMoods().then(() => {
+              console.log("Reseeded Moods");
+              return Promise.resolve("Done reseeding Database");
+            });
+          });
         });
       })
-      .catch(error =>
-        console.log("reseedDatabase() Error reseeding database", error)
-      );
+      .catch(error => {
+        console.log("Error reseeding", error);
+      });
+  };
+
+  executeFullSql = (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+      this.db.transaction(tx => {
+        tx.executeSql(
+          sql,
+          params,
+          (tx, result) => {
+            resolve(result);
+          },
+          error => reject(error)
+        );
+      });
+    });
   };
 
   executeSql = async (sql, params = []) => {
@@ -135,6 +189,55 @@ export default class Database {
         );
       })
     );
+  };
+
+  getMoodsWithTags = () => {
+    // Group concat then build tag data afterwards?
+    // return this.executeFullSql(
+    //   "SELECT M.*, GROUP_CONCAT(T.id) as tIDs, GROUP_CONCAT(T.iconType) as tITs, GROUP_CONCAT(T.iconName) as tINs, GROUP_CONCAT(T.displayName) as tDNs FROM moods M INNER JOIN tagmap TM ON M.id = TM.moodId INNER JOIN tags T on TM.tagId = T.id GROUP BY M.id;"
+    // ).then(result => {
+    //   console.log(result);
+    //   // can i somehow do this in the query itself in sqlite?
+    //   // group concat returns a string with a seperator
+    //   // no array in sqlite
+    //   // would it be faster to query for each mood,
+    //   // then use it's id to query for an inner join of tagmap and tags,
+    //   // then using that result array as tags?
+    //   result.rows._array.forEach(mood => {
+    //     mood.tDNs = mood.tDNs.split(",");
+    //     mood.tIDs = mood.tIDs.split(",");
+    //     mood.tITs = mood.tITs.split(",");
+    //     mood.tINs = mood.tINs.split(",");
+    //     mood.tags = mood.tIDs.map((id, index) => {
+    //       return {
+    //         id: id,
+    //         iconName: mood.tINs[index],
+    //         iconType: mood.tITs[index],
+    //         displayName: mood.tDNs[index]
+    //       };
+    //     });
+    //   });
+    //   return Promise.resolve(true);
+    // });
+
+    // query all moods, then subquery for each mood id, matching tag.id in tagmap.moodId = mood.id
+    return this.executeFullSql("SELECT * FROM moods").then(result => {
+      let promises = [];
+      // have all moods, do a promise for each subquery for each mood matching mood id and tag id in tag map.
+      result.rows._array.forEach(mood => {
+        promises.push(
+          this.executeFullSql(
+            "SELECT * FROM tags t WHERE t.id IN (SELECT tagmap.tagId FROM tagmap WHERE moodId = ?);",
+            [mood.id]
+          ).then(result => {
+            mood.tags = [...result.rows._array];
+          })
+        );
+      });
+      return Promise.all(promises).then(r => {
+        return Promise.resolve(result.rows);
+      });
+    });
   };
 
   getTags = () => {
