@@ -22,6 +22,21 @@ const moodData = [
     tags: [3, 13, 8, 9],
     rating: 21,
     note: "bad day"
+  },
+  {
+    date: "November 22 2019",
+    tags: [2, 5, 8, 4],
+    rating: 43
+  },
+  {
+    date: "November 21 2019",
+    tags: [5, 14, 3, 1, 2, 4, 6, 7],
+    rating: 65
+  },
+  {
+    date: "November 20 2019",
+    tags: [11, 2, 10],
+    rating: 75
   }
 ];
 
@@ -221,7 +236,9 @@ export default class Database {
     // });
 
     // query all moods, then subquery for each mood id, matching tag.id in tagmap.moodId = mood.id
-    return this.executeFullSql("SELECT * FROM moods").then(result => {
+    return this.executeFullSql(
+      "SELECT * FROM moods ORDER BY moods.date DESC"
+    ).then(result => {
       let promises = [];
       // have all moods, do a promise for each subquery for each mood matching mood id and tag id in tag map.
       result.rows._array.forEach(mood => {

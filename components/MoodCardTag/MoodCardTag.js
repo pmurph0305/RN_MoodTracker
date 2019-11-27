@@ -4,7 +4,7 @@ import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 export default class MoodCardTag extends React.Component {
   getIconForTag = tag => {
-    let color = this.props.isSelected ? "white" : "black";
+    let color = "#799CF4";
     switch (tag.iconType) {
       case "FontAwesome":
         return (
@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 5
+    marginRight: 10,
+    marginBottom: 5
   },
   icon: { paddingRight: 5 }
 });

@@ -4,7 +4,7 @@ import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 export default class TagContainer extends React.Component {
   getIconForTag = tag => {
-    let color = this.props.isSelected ? "white" : "black";
+    let color = this.props.isSelected ? "white" : "white";
     switch (tag.iconType) {
       case "FontAwesome":
         return (
@@ -37,7 +37,7 @@ export default class TagContainer extends React.Component {
   };
 
   getFillColor = isSelected => {
-    return { backgroundColor: isSelected ? "black" : "white" };
+    return { backgroundColor: isSelected ? "#425390" : "#799CF4" };
   };
 
   render() {
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5000,
-    borderWidth: 1
+    borderRadius: 5000
+    // borderWidth: 1
   },
-  iconStyle: { margin: 150, backgroundColor: "blue" }
+  iconStyle: { margin: 150 }
 });
