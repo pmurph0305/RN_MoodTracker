@@ -16,7 +16,7 @@ export default class MoodList extends React.Component {
         return <MoodCard key={"mood_" + index} mood={mood} />;
       });
     } else {
-      return <Text>No moods.</Text>;
+      return <View></View>;
     }
   }
 }

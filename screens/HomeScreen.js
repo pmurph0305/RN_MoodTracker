@@ -1,5 +1,12 @@
 import React from "react";
-import { View, ScrollView, Text, Button, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+  ScrollView,
+  Text,
+  Button,
+  StyleSheet
+} from "react-native";
 import MoodsList from "../components/MoodList/MoodList.js";
 import TagList from "../components/TagList/TagList.js";
 import { Header } from "react-native-elements";
@@ -7,38 +14,18 @@ import { Header } from "react-native-elements";
 import DateNavHeader from "../components/DateNavHeader/DateNavHeader";
 
 import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
 
 import Database from "../database/database";
 
-const dbClass = new Database();
-const db = dbClass.db;
-// const dbClass = new Database();
-// const db = dbClass.getDatabase();
-//const db = database.getDatabase();
-const data = [
-  {
-    date: "November 24 2019",
-    tags: "Relax, Games, Programming",
-    rating: 45,
-    note: "good day"
-  },
-  {
-    date: "November 25 2019",
-    tags: "Relax, Games",
-    rating: 55
-  },
-  {
-    date: "November 26 2019",
-    tags: "Games, TV",
-    rating: 75
-  }
-];
+const db = new Database();
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      isLoadingData: true,
       success: false,
       error: false,
       moods: [],
@@ -54,88 +41,33 @@ export default class HomeScreen extends React.Component {
     this.setState({ success: true });
   };
 
-  insertIntoDatabase = item => {
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          "insert into moods (rating, date, tags, note) values (?, ?, ?, ?);",
-          [item.rating, item.date, item.tags, item.note],
-          success => {
-            console.log("Success insert:" + item.date);
-          },
-          error => {
-            console.log("Error inserting " + item.date, error);
-          }
-        );
-      },
-      error => {
-        console.log(error);
-        this.setError();
-      },
-      success => {
-        console.log("Succesfully inserted:" + item.date);
-        this.setSuccess();
-      }
-    );
-  };
-
-  repopulateDB = () => {
-    console.log("repopulating db");
-    data.forEach(item => this.insertIntoDatabase(item));
-    db.transaction(tx => {
-      tx.executeSql("SELECT * FROM MOODS", [], (tx, result) => {
-        this.setState({ moods: result.rows._array });
-      });
-    });
-  };
-
   logData = () => {
     console.log("log data");
-    db.transaction(tx => {
-      tx.executeSql("SELECT * FROM MOODS", [], (tx, result) => {
-        console.log(result.rows);
-      });
-    });
-    //dbClass.getTags();
-  };
+    db.getMoods()
+      .then(result => {
+        console.log("Successfully queried moods", result);
+      })
+      .catch(error => console.log("Error getting moods", error));
 
-  dropCreatePopulateDB = () => {
-    if (db) {
-      db.transaction(
-        tx => {
-          tx.executeSql("drop table if exists moods;");
-        },
-        null,
-        () => {
-          console.log("dropped table.");
-          db.transaction(
-            tx => {
-              tx.executeSql(
-                "create table if not exists moods (id integer primary key not null, rating int, date text, tags text, note text);"
-              );
-            },
-            null,
-            () => {
-              console.log("Recreated table");
-              this.repopulateDB();
-            }
-          );
-        }
-      );
-    }
+    db.getTags()
+      .then(result => {
+        console.log("Successfully queries tags", result);
+      })
+      .catch(error => console.log("Error getting tags", error));
   };
 
   componentDidMount() {
-    this.dropCreatePopulateDB();
-    dbClass.seedDatabase();
-    dbClass.getTags().then(result => {
-      this.setState({ tags: result });
-    });
+    // display a loading bar of some sort while initial query goes.
+    db.executeSql("DROP TABLE IF EXISTS TAGS")
+      .then(() => {
+        return db.reseedDatabase().then(r => {
+          return db.getMoods().then(result => {
+            this.setState({ moods: result._array, isLoadingData: false });
+          });
+        });
+      })
+      .catch(error => console.log("Error dropping tags", error));
   }
-
-  onIconPress = iconName => {
-    console.log("Example:" + iconName);
-  };
 
   onPressDateNav = change => {
     console.log("Month Change:" + change);
@@ -154,29 +86,28 @@ export default class HomeScreen extends React.Component {
             />
           }
         />
-        <TagList
-          selectedTags={[0, 1, 5]}
-          tags={this.state.tags}
-          onIconPress={data => this.onIconPress(data)}
-        />
+        {this.state.isLoadingData && (
+          <View style={styles.aiContainer}>
+            <ActivityIndicator
+              size="large"
+              animating={this.state.isLoadingData}
+              color="#0000ff"
+            />
+          </View>
+        )}
+
         <MoodsList moods={moods} />
-        <Text>Home Screen</Text>
-        <Button
-          title="STATS!"
-          onPress={() => this.props.navigation.navigate("Stats")}
-        />
         <Button title="Log data" onPress={() => this.logData()} />
-        <Text>{new Date().toDateString()}</Text>
-        <Text>{this.state.success ? "SUCCESS" : "NOT S"}</Text>
-        <Text>{this.state.error ? "ERROR" : "NOT E"}</Text>
-        <Text
-          onPress={() => {
-            console.log("press");
-          }}
-        >
-          AHHH{" "}
-        </Text>
       </ScrollView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  aiContainer: {
+    flex: 1,
+    justifyContent: "center",
+    flexDirection: "row",
+    padding: 40
+  }
+});

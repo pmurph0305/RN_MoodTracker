@@ -13,7 +13,7 @@ const routeConfig = {
 };
 
 const NavigatorConfig = {
-  initialRouteName: "Tags"
+  initialRouteName: "Entries"
 };
 // const AppNavigator = createStackNavigator(routeConfig, NavigatorConfig);
 

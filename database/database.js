@@ -47,59 +47,78 @@ export default class Database {
   }
 
   insertTag = (iconType, iconData) => {
-    this.db.transaction(tx => {
-      tx.executeSql(
-        "INSERT OR IGNORE INTO tags(IconType, IconName, DisplayName) VALUES (?, ?, ?);",
-        [iconType, iconData.iconName, iconData.displayName],
-        null,
-        null
-        // success => console.log("succesfully added " + iconType + " icons"),
-        // err => console.log("error adding FA icons", err)
-      );
-    });
+    return this.executeSql(
+      "INSERT OR IGNORE INTO tags(IconType, IconName, DisplayName) VALUES (?, ?, ?);",
+      [iconType, iconData.iconName, iconData.displayName]
+    );
   };
 
   seedTags = () => {
-    // this.db.transaction(tx => {
-    //   tx.executeSql("drop table if exists tags");
-    // });
-    this.db.transaction(tx => {
-      tx.executeSql(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='tags';",
-        [],
-        (trx, res) => {
-          // will have 1 if table exists already.
-          if (res.rows.length === 0) {
-            this.db.transaction(
-              tx => {
-                tx.executeSql(
-                  "CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY NOT NULL, IconType TEXT, IconName TEXT, DisplayName TEXT NOT NULL UNIQUE);",
-                  [],
-                  () => {
-                    // table could have been created.
-                    fontAwesomeIcons.forEach(icon => {
-                      this.insertTag("FontAwesome", icon);
-                    });
-                    materialIcons.forEach(icon => {
-                      this.insertTag("MaterialIcons", icon);
-                    });
-                    featherIcons.forEach(icon => {
-                      this.insertTag("Feather", icon);
-                    });
-                  }
-                );
-              },
-              error => console.log("Error seeding icons", error),
-              () => console.log("TX to create tags successful")
-            );
-          }
-        }
-      );
+    return this.executeSql(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='tags';",
+      []
+    ).then(result => {
+      if (result.length === 0) {
+        return this.executeSql(
+          "CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY NOT NULL, IconType TEXT, IconName TEXT, DisplayName TEXT NOT NULL UNIQUE);"
+        ).then(() => {
+          console.log("Successfully recreated tags table");
+          let promises = [];
+          fontAwesomeIcons.forEach(icon => {
+            promises.push(this.insertTag("FontAwesome", icon));
+          });
+          materialIcons.forEach(icon => {
+            promises.push(this.insertTag("MaterialIcons", icon));
+          });
+          featherIcons.forEach(icon => {
+            promises.push(this.insertTag("Feather", icon));
+          });
+          return Promise.all(promises).then(() => {
+            console.log("Successfully reinserted all tags");
+            return new Promise.resolve("All reinserting of tags completed");
+          });
+        });
+      } else {
+        return new Promise.resolve("No need to reseed tag table.");
+      }
     });
   };
 
-  seedDatabase = () => {
-    this.seedTags();
+  dropThenSeedMoods = () => {
+    return this.executeSql("DROP TABLE IF EXISTS moods;").then(() => {
+      console.log("Successfully dropped moods table");
+      return this.executeSql(
+        "CREATE TABLE IF NOT EXISTS moods (id INTEGER PRIMARY KEY NOT NULL, rating INT, date TEXT, tags TEXT, note TEXT);"
+      ).then(() => {
+        console.log("Successfully created moods table");
+        let promises = [];
+        moodData.forEach(item => {
+          promises.push(
+            this.executeSql(
+              "insert into moods (rating, date, tags, note) values (?, ?, ?, ?);",
+              [item.rating, item.date, item.tags, item.note]
+            )
+          );
+        });
+        return Promise.all(promises).then(() => {
+          console.log("Successfully reseeded moods table");
+          return new Promise.resolve("Succesfully reseeded moods");
+        });
+      });
+    });
+  };
+
+  reseedDatabase = () => {
+    console.log("Reseeding database...");
+    return this.seedTags()
+      .then(r => {
+        return this.dropThenSeedMoods().then(r => {
+          return new Promise.resolve("Succesfully reseeded");
+        });
+      })
+      .catch(error =>
+        console.log("reseedDatabase() Error reseeding database", error)
+      );
   };
 
   executeSql = async (sql, params = []) => {
@@ -110,9 +129,9 @@ export default class Database {
           params,
           (_, { rows }) => {
             // console.log(rows);
-            resolve(rows._array);
+            resolve(rows);
           },
-          reject
+          error => reject(error)
         );
       })
     );
@@ -120,5 +139,9 @@ export default class Database {
 
   getTags = () => {
     return this.executeSql("SELECT * FROM tags;");
+  };
+
+  getMoods = () => {
+    return this.executeSql("SELECT * FROM moods;");
   };
 }

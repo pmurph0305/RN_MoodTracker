@@ -17,7 +17,7 @@ export default class TagScreen extends React.Component {
 
   componentDidMount() {
     db.getTags().then(tags => {
-      this.setState({ tags: tags });
+      this.setState({ tags: tags._array });
     });
   }
 

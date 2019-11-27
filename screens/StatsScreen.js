@@ -8,11 +8,11 @@ export default class StatsScreen extends React.Component {
         <Text>Stats Screen</Text>
         <Button
           title="STATS!"
-          onPress={() => this.props.navigation.push("Stats")}
+          onPress={() => this.props.navigation.navigate("Stats")}
         />
         <Button
           title="Go to Home"
-          onPress={() => this.props.navigation.popToTop()}
+          onPress={() => this.props.navigation.navigate("Entries")}
         />
         <Button
           title="Go back"
