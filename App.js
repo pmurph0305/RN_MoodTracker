@@ -6,14 +6,16 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
+import RatingScreen from "./screens/RatingScreen";
 const routeConfig = {
   Entries: HomeScreen,
   Stats: StatsScreen,
-  Tags: TagScreen
+  Tags: TagScreen,
+  NewEntry: RatingScreen
 };
 
 const NavigatorConfig = {
-  initialRouteName: "Entries"
+  initialRouteName: "NewEntry"
 };
 // const AppNavigator = createStackNavigator(routeConfig, NavigatorConfig);
 
