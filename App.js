@@ -7,15 +7,71 @@ import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
+
+import { FontAwesome } from "@expo/vector-icons";
+
+const NewEntryStack = createStackNavigator(
+  {
+    NewEntry: RatingScreen,
+    Tags: TagScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: "New Entry"
+    })
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerVisible: false,
+      headershown: false
+    }
+  }
+);
+
 const routeConfig = {
-  Entries: HomeScreen,
-  Stats: StatsScreen,
-  Tags: TagScreen,
-  NewEntry: RatingScreen
+  Entries: {
+    screen: HomeScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: "Entries"
+    })
+  },
+  NewEntry: NewEntryStack,
+  Stats: StatsScreen
 };
 
+// pie-chart for stats
+// + for new entry.
+// plus-circle
 const NavigatorConfig = {
-  initialRouteName: "NewEntry"
+  defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ focused, horizontal, tintColor }) => {
+      const { routeName } = navigation.state;
+      let iconName = "book";
+      if (routeName === "Entries") {
+        iconName = "book";
+      } else if (routeName === "Stats") {
+        iconName = "pie-chart";
+      } else if (routeName === "NewEntry") {
+        iconName = "plus-circle";
+      } else if (routeName === "Tags") {
+        iconName = "bookmark"; // temporary, should only be accessed through new entries.
+      }
+      return <FontAwesome name={iconName} size={24} color={tintColor} />;
+    }
+  }),
+
+  initialRouteName: "NewEntry",
+  tabBarOptions: {
+    activeBackgroundColor: "#799CF4",
+    inactiveBackgroundColor: "#5e8cff",
+    activeTintColor: "#ffffff",
+    inactiveTintColor: "#f5f5f5",
+    labelStyle: { fontSize: 12 }
+  },
+  headerHideBackButton: true,
+  headerMode: "none",
+  navigationOptions: {
+    headerVisible: false
+  }
 };
 // const AppNavigator = createStackNavigator(routeConfig, NavigatorConfig);
 
