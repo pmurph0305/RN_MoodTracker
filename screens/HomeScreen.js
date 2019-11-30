@@ -20,6 +20,30 @@ import Database from "../database/database";
 
 const db = new Database();
 
+const DaysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
+];
+const MonthsOfYear = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -71,10 +95,29 @@ export default class HomeScreen extends React.Component {
       .then(r => {
         return db.getMoodsWithTags().then(result => {
           //console.log("RESULT", result._array);
+          result._array.forEach(mood => {
+            let date = new Date(mood.date);
+            let dateString =
+              DaysOfWeek[date.getDay()] +
+              ", " +
+              MonthsOfYear[date.getMonth()] +
+              " " +
+              date.getDate();
+            mood.date = dateString;
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            let AmPm = hours > 12 ? "pm" : "am";
+            hours = hours % 12;
+            hours = hours === 0 ? 12 : hours;
+            minutes = minutes > 10 ? minutes : "0" + minutes;
+            mood.time = hours + ":" + minutes + " " + AmPm;
+          });
           this.setState({ moods: result._array, isLoadingData: false });
         });
       })
-      .catch(error => console.log("Error dropping tags", error));
+      .catch(error =>
+        console.log("Error reseeding or querying new data.", error)
+      );
   }
 
   onPressDateNav = change => {

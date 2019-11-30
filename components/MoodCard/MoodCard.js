@@ -35,7 +35,10 @@ export default class MoodList extends React.Component {
           style={[styles.colorIcon, this.getIconColorStyle(mood.rating)]}
         ></View>
         <View style={styles.dataContainer}>
-          <Text style={styles.date}>{mood.date}</Text>
+          <View style={styles.dateTimeContainer}>
+            <Text style={styles.date}>{mood.date}</Text>
+            <Text style={styles.time}>{mood.time}</Text>
+          </View>
           <View style={styles.tagContainer}>
             {mood.tags.map((tag, index) => {
               // if (index < 3) {
@@ -67,6 +70,15 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 16
+  },
+  time: {
+    fontSize: 10
+  },
+  dateTimeContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   colorIcon: {
     backgroundColor: "orange",

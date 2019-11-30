@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Slider, Button } from "react-native-elements";
-import Icon from "react-native-vector-icons/FontAwesome";
 import DateTimePicker from "react-native-modal-datetime-picker";
 
 const DaysOfWeek = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
@@ -23,7 +22,7 @@ const MonthsOfYear = [
 export default class RatingScreen extends React.Component {
   constructor(props) {
     super(props);
-    let randomRating = Math.random() * 100;
+    let randomRating = Math.round(Math.random() * 1000) / 10;
     this.state = {
       datePicked: new Date(),
       timePicked: new Date(),
@@ -46,6 +45,13 @@ export default class RatingScreen extends React.Component {
     this.setState({ rating: value });
   };
 
+  /**
+   * @param {object} date JS date object.
+   * Parses a js date object to a "3:14 pm" string
+   * (A 12-hour 12:00 am -> 11:59 pm string.)
+   * Ignores milliseconds.
+   * Sets timeString's state.
+   */
   parseDateToTimeString = date => {
     // build time string.
     let time = date
@@ -75,6 +81,11 @@ export default class RatingScreen extends React.Component {
     this.setState({ timeString: time });
   };
 
+  /**
+   * @param {object} date JS Date object
+   * Parses a js date object to a "Mon, Nov 5" string format.
+   * Sets dateString's state.
+   */
   parseDateToString = date => {
     let dateString =
       DaysOfWeek[date.getDay()] +
@@ -113,17 +124,15 @@ export default class RatingScreen extends React.Component {
     this.setState({ isTimePickerVisible: true });
   };
 
+  // Converts date & time picked if they are different
+  // to a single date, then navigates to tags, passing the date & rating to that screen.
   onContinuePress = () => {
-    console.log("submitting rating");
     let datePicked = this.state.datePicked.toISOString();
     let timePicked = this.state.timePicked.toISOString();
-    console.log("d", datePicked);
-    console.log("t", timePicked);
     let fullDatePicked = datePicked;
     if (datePicked !== timePicked) {
       fullDatePicked =
         datePicked.split("T")[0] + "T" + timePicked.split("T")[1];
-      console.log("combine date & time to new date", fullDatePicked);
     }
     this.props.navigation.navigate("Tags", {
       date: new Date(fullDatePicked),
@@ -132,9 +141,6 @@ export default class RatingScreen extends React.Component {
   };
 
   render() {
-    console.log("datep", this.state.datePicked);
-    console.log("timep", this.state.timePicked);
-    console.log("--");
     return (
       <View style={styles.scrollView}>
         <Text style={styles.titleText}>HOW ARE YOU?</Text>
