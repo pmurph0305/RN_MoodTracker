@@ -73,6 +73,17 @@ export default class HomeScreen extends React.Component {
     this.updateMoodStateForDate(this.state.currentDate);
   }
 
+  componentWillReceiveProps(nextProps) {
+    let { navigation } = nextProps;
+    let hasNewEntry = navigation.getParam("hasNewEntry");
+    if (hasNewEntry) {
+      let d = new Date();
+      if (d.getMonth() === this.state.currentDate.getMonth()) {
+        this.updateMoodStateForDate(this.state.currentDate);
+      }
+    }
+  }
+
   /**
    * Gets the moods from the database for the current month that date is in
    * Sets state of moods & isLoadingData after query completes.
@@ -136,6 +147,7 @@ export default class HomeScreen extends React.Component {
       newDate.setFullYear(newDate.getFullYear() + 1);
     }
     newDate.setMonth(newMonth);
+    this.setState({ moods: [] });
     this.setNewDateState(newDate);
   };
 

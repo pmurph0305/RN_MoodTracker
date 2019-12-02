@@ -59,7 +59,7 @@ const NavigatorConfig = {
     }
   }),
 
-  initialRouteName: "NewEntry",
+  initialRouteName: "Entries",
   tabBarOptions: {
     activeBackgroundColor: "#799CF4",
     inactiveBackgroundColor: "#5e8cff",

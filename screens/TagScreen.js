@@ -81,7 +81,7 @@ export default class TagScreen extends React.Component {
         });
         this.props.navigation.dispatch(resetAction);
         // navigate to different
-        this.props.navigation.navigate("Entries");
+        this.props.navigation.navigate("Entries", { hasNewEntry: true });
       })
       .catch(error => {
         //TODO: Display error.

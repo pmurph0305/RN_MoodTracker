@@ -293,7 +293,7 @@ export default class Database {
     date = date.toISOString();
     nextMonth = nextMonth.toISOString();
     return this.executeFullSql(
-      "SELECT * FROM moods WHERE DATE(moods.date) BETWEEN DATE(?) AND DATE(?)",
+      "SELECT * FROM moods WHERE DATE(moods.date) BETWEEN DATE(?) AND DATE(?) ORDER BY moods.date DESC",
       [date, nextMonth]
     ).then(result => {
       // for every mood we have, need to get the tags for the mood.
