@@ -40,18 +40,21 @@ export default class MoodList extends React.Component {
             <Text style={styles.time}>{mood.time}</Text>
           </View>
           <View style={styles.tagContainer}>
-            {mood.tags.map((tag, index) => {
-              // if (index < 3) {
-              //   return (
-              //     <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />
-              //   );
-              // } else {
-              //   return <Text key={mood.id + "_extra"}>...</Text>;
-              // }
-              return <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />;
-            })}
+            {mood.tags &&
+              mood.tags.map((tag, index) => {
+                // if (index < 3) {
+                //   return (
+                //     <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />
+                //   );
+                // } else {
+                //   return <Text key={mood.id + "_extra"}>...</Text>;
+                // }
+                return (
+                  <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />
+                );
+              })}
           </View>
-          {mood.note && <Text style={styles.note}>{mood.note}</Text>}
+          {mood.note ? <Text style={styles.note}>{mood.note}</Text> : null}
         </View>
       </Card>
     );

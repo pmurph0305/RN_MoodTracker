@@ -4,6 +4,8 @@ import { Input, Button } from "react-native-elements";
 import TagList from "../components/TagList/TagList";
 import Database from "../database/database";
 
+import { NavigationActions, StackActions } from "react-navigation";
+
 const db = new Database();
 export default class TagScreen extends React.Component {
   constructor(props) {
@@ -65,13 +67,25 @@ export default class TagScreen extends React.Component {
       tags: selectedTags,
       note: note
     };
-    console.log("Inserting...", mood);
     db.insertMood(mood)
       .then(result => {
-        console.log("ts", result);
+        // create and dispatch a reset action to reset
+        // the current navigation stack back to top screen.
+        let resetAction = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({
+              routeName: "NewEntry"
+            })
+          ]
+        });
+        this.props.navigation.dispatch(resetAction);
+        // navigate to different
+        this.props.navigation.navigate("Entries");
       })
       .catch(error => {
-        console.log("ts", error);
+        //TODO: Display error.
+        console.log("tagscreen", error);
       });
   };
 

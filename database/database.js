@@ -2,7 +2,7 @@ import * as SQLite from "expo-sqlite";
 
 const moodData = [
   {
-    date: "2019-11-28T14:48:00.000Z",
+    date: "2019-12-02T14:48:00.000Z",
     tags: [8, 1, 2],
     rating: 45.5,
     note: "good day"
@@ -205,7 +205,6 @@ export default class Database {
           sql,
           params,
           (_, { rows }) => {
-            // console.log(rows);
             resolve(rows);
           },
           error => reject(error)
@@ -251,10 +250,7 @@ export default class Database {
       // have all moods, do a promise for each subquery for each mood matching mood id and tag id in tag map.
       result.rows._array.forEach(mood => {
         promises.push(
-          this.executeFullSql(
-            "SELECT * FROM tags t WHERE t.id IN (SELECT tagmap.tagId FROM tagmap WHERE moodId = ?);",
-            [mood.id]
-          ).then(result => {
+          this.getTagsForMood(mood).then(result => {
             mood.tags = [...result.rows._array];
           })
         );
@@ -271,5 +267,48 @@ export default class Database {
 
   getMoods = () => {
     return this.executeSql("SELECT * FROM moods;");
+  };
+
+  getTagsForMood = mood => {
+    return this.executeFullSql(
+      "SELECT * FROM tags t WHERE t.id IN (SELECT tagmap.tagId FROM tagmap WHERE moodId = ?);",
+      [mood.id]
+    );
+  };
+
+  getMoodsInCurrentDateMonth = date => {
+    // change date object to beginning of month for querying > than this date.
+    date.setDate(1);
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    // Need to query between start of month and end of month.
+    let nextMonth = new Date(date);
+    let newMonth = date.getMonth() + 1;
+    if (newMonth > 11) {
+      newMonth = 0;
+      nextMonth.setFullYear(nextMonth.getFullYear() + 1);
+    }
+    nextMonth.setMonth(newMonth);
+    date = date.toISOString();
+    nextMonth = nextMonth.toISOString();
+    return this.executeFullSql(
+      "SELECT * FROM moods WHERE DATE(moods.date) BETWEEN DATE(?) AND DATE(?)",
+      [date, nextMonth]
+    ).then(result => {
+      // for every mood we have, need to get the tags for the mood.
+      let promises = [];
+      result.rows._array.forEach(mood => {
+        promises.push(
+          this.getTagsForMood(mood).then(result => {
+            mood.tags = [...result.rows._array];
+          })
+        );
+      });
+      // resolve all the promises together.
+      return Promise.all(promises).then(() => {
+        return Promise.resolve(result.rows);
+      });
+    });
   };
 }
