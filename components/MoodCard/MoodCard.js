@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Card, ListItem, Button } from "react-native-elements";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MoodCardTag from "../MoodCardTag/MoodCardTag";
 
 export default class MoodList extends React.Component {
@@ -14,16 +14,31 @@ export default class MoodList extends React.Component {
       return { backgroundColor: color };
     };
     switch (true) {
-      case rating >= 75:
-        return toBgColor("green");
-      case rating >= 55:
-        return toBgColor("blue");
-      case rating >= 35:
-        return toBgColor("purple");
-      case rating >= 15:
-        return toBgColor("orange");
+      case rating >= 80:
+        return toBgColor("#f1c40f");
+      case rating >= 60:
+        return toBgColor("#2ecc71");
+      case rating >= 40:
+        return toBgColor("#27ae9c");
+      case rating >= 20:
+        return toBgColor("#2781ae");
       default:
-        return toBgColor("red");
+        return toBgColor("#2742ae");
+    }
+  };
+
+  getIconName = rating => {
+    switch (true) {
+      case rating >= 80:
+        return "emoticon-excited";
+      case rating >= 60:
+        return "emoticon-happy";
+      case rating >= 40:
+        return "emoticon-neutral";
+      case rating >= 20:
+        return "emoticon-sad";
+      default:
+        return "emoticon-dead";
     }
   };
 
@@ -31,9 +46,12 @@ export default class MoodList extends React.Component {
     const { mood } = this.props;
     return (
       <Card wrapperStyle={styles.cardWrapper}>
-        <View
-          style={[styles.colorIcon, this.getIconColorStyle(mood.rating)]}
-        ></View>
+        <MaterialCommunityIcons
+          size={40}
+          name={this.getIconName(mood.rating)}
+          color={this.getIconColorStyle(mood.rating).backgroundColor}
+        />
+
         <View style={styles.dataContainer}>
           <View style={styles.dateTimeContainer}>
             <Text style={styles.date}>{mood.date}</Text>
@@ -83,11 +101,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center"
   },
-  colorIcon: {
-    backgroundColor: "orange",
-    borderRadius: 50,
-    width: 50,
-    height: 50
+  icon: {
+    padding: 5
   },
   another: {
     backgroundColor: "green"

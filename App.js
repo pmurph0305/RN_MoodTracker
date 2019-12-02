@@ -9,14 +9,12 @@ import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
 
 import { FontAwesome } from "@expo/vector-icons";
+import { Rating } from "react-native-ratings";
 
 const NewEntryStack = createStackNavigator(
   {
     NewEntry: RatingScreen,
-    Tags: TagScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: "New Entry"
-    })
+    Tags: TagScreen
   },
   {
     headerMode: "none",
@@ -34,7 +32,12 @@ const routeConfig = {
       title: "Entries"
     })
   },
-  NewEntry: NewEntryStack,
+  NewEntry: {
+    screen: NewEntryStack,
+    navigationOptions: ({ navigation }) => ({
+      title: "New Entry"
+    })
+  },
   Stats: StatsScreen
 };
 
