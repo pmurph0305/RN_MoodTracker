@@ -4,7 +4,7 @@ const moodData = [
   {
     date: "2019-11-28T14:48:00.000Z",
     tags: [8, 1, 2],
-    rating: 45,
+    rating: 45.5,
     note: "good day"
   },
   {
@@ -122,15 +122,23 @@ export default class Database {
           );
         });
         return Promise.all(promises).then(() => {
-          return Promise.resolve();
+          return Promise.resolve(
+            "Successfully inserted mood " + result.insertId
+          );
         });
       })
       .catch(error => {
         console.log("ERROR", error);
+        reject(error);
       });
   };
 
-  insertTagMap = (moodId, tagId) => {};
+  insertTagMap = (moodId, tagId) => {
+    return this.executeFullSql(
+      "INSERT INTO tagmap (moodId, tagId) VALUES(?,?);",
+      [moodId, tagId]
+    );
+  };
 
   deleteAllTables = () => {
     return this.executeSql("drop table if exists moods;").then(() => {
@@ -142,7 +150,7 @@ export default class Database {
 
   createAllTables = () => {
     return this.executeSql(
-      "CREATE TABLE IF NOT EXISTS moods (id INTEGER PRIMARY KEY NOT NULL, rating INT, date TEXT, note TEXT);"
+      "CREATE TABLE IF NOT EXISTS moods (id INTEGER PRIMARY KEY NOT NULL, rating REAL, date TEXT, note TEXT);"
     ).then(() => {
       return this.executeSql(
         "CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY NOT NULL, iconType TEXT, iconName TEXT, displayName TEXT NOT NULL UNIQUE);"

@@ -57,6 +57,24 @@ export default class TagScreen extends React.Component {
     this.setState({ note: text });
   };
 
+  onSubmitTags = () => {
+    let { rating, date, selectedTags, note } = this.state;
+    let mood = {
+      rating: rating,
+      date: date.toISOString(),
+      tags: selectedTags,
+      note: note
+    };
+    console.log("Inserting...", mood);
+    db.insertMood(mood)
+      .then(result => {
+        console.log("ts", result);
+      })
+      .catch(error => {
+        console.log("ts", error);
+      });
+  };
+
   render() {
     return (
       <ScrollView
@@ -79,6 +97,7 @@ export default class TagScreen extends React.Component {
           containerStyle={styles.btnContainer}
           buttonStyle={styles.btnStyle}
           title="Save"
+          onPress={this.onSubmitTags}
         >
           Save
         </Button>
