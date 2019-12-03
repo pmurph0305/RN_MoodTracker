@@ -7,6 +7,7 @@ import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
+import NewTagScreen from "./screens/NewTagScreen";
 
 import { FontAwesome } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
@@ -14,6 +15,7 @@ import { Rating } from "react-native-ratings";
 const NewEntryStack = createStackNavigator(
   {
     NewEntry: RatingScreen,
+    NewTag: NewTagScreen,
     Tags: TagScreen
   },
   {

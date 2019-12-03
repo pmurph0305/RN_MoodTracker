@@ -3,14 +3,14 @@ import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
 import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 export default class TagContainer extends React.Component {
-  getIconForTag = tag => {
+  getIconForTag = (tag, size = 24) => {
     let color = this.props.isSelected ? "white" : "white";
     switch (tag.iconType) {
       case "FontAwesome":
         return (
           <FontAwesome
             style={styles.icon}
-            size={24}
+            size={size}
             name={tag.iconName}
             color={color}
           />
@@ -19,7 +19,7 @@ export default class TagContainer extends React.Component {
         return (
           <Feather
             style={styles.icon}
-            size={24}
+            size={size}
             name={tag.iconName}
             color={color}
           />
@@ -28,7 +28,7 @@ export default class TagContainer extends React.Component {
         return (
           <MaterialIcons
             style={styles.icon}
-            size={24}
+            size={size}
             name={tag.iconName}
             color={color}
           />
@@ -41,12 +41,25 @@ export default class TagContainer extends React.Component {
   };
 
   render() {
-    let { tag, onIconPress, isSelected } = this.props;
+    let {
+      tag,
+      onIconPress,
+      isSelected,
+      size,
+      iconContainerStyle,
+      containerStyle
+    } = this.props;
     return (
       <TouchableWithoutFeedback onPress={() => onIconPress(tag.id)}>
-        <View style={styles.container}>
-          <View style={[styles.iconContainer, this.getFillColor(isSelected)]}>
-            {this.getIconForTag(tag)}
+        <View style={[styles.container, containerStyle]}>
+          <View
+            style={[
+              styles.iconContainer,
+              this.getFillColor(isSelected),
+              iconContainerStyle
+            ]}
+          >
+            {this.getIconForTag(tag, size)}
           </View>
           <Text>{tag.displayName}</Text>
         </View>
@@ -60,7 +73,6 @@ const styles = StyleSheet.create({
     padding: 5
   },
   container: {
-    flex: 0,
     flexDirection: "column",
     flexWrap: "nowrap",
     alignItems: "center",
@@ -69,7 +81,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 50,
     height: 50,
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 5000

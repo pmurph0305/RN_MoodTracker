@@ -15,15 +15,20 @@ export default class TagScreen extends React.Component {
       selectedTags: [],
       note: "",
       rating: 0,
-      date: new Date()
+      date: new Date(),
+      newTagAdded: false
     };
   }
 
-  componentDidMount() {
+  onNewTagAdded = () => {
+    this.resetTagState();
+  };
+
+  resetTagState = () => {
     const { navigation } = this.props;
-    console.log("dn", navigation.getParam("date"));
     let date = navigation.getParam("date");
     let rating = navigation.getParam("rating");
+    console.log(date, rating);
     db.getTags().then(tags => {
       this.setState({
         tags: tags._array,
@@ -31,6 +36,10 @@ export default class TagScreen extends React.Component {
         rating: rating ? rating : 0
       });
     });
+  };
+
+  componentDidMount() {
+    this.resetTagState();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -95,8 +104,6 @@ export default class TagScreen extends React.Component {
         style={styles.scrollView}
         contentContainerStyle={styles.svContentContainer}
       >
-        <Text>{this.state.rating}</Text>
-        <Text>{this.state.date.toISOString()}</Text>
         <Text style={styles.titleText}>WHAT HAVE YOU BEEN UP TO?</Text>
         <TagList
           selectedTags={this.state.selectedTags}
@@ -115,6 +122,15 @@ export default class TagScreen extends React.Component {
         >
           Save
         </Button>
+        <Button
+          onPress={() => {
+            this.props.navigation.navigate("NewTag", {
+              onNewTagAdded: this.onNewTagAdded
+            });
+          }}
+          containerStyle={styles.btnContainer}
+          title="Add more tags"
+        />
       </ScrollView>
     );
   }
@@ -123,20 +139,20 @@ export default class TagScreen extends React.Component {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    flexDirection: "column",
-    marginTop: 50
+    flexDirection: "column"
   },
   svContentContainer: {
     justifyContent: "center",
     alignItems: "center"
   },
   titleText: {
+    paddingTop: 50,
     textAlign: "center",
     fontSize: 36
   },
   btnContainer: {
-    marginTop: 30,
-    marginBottom: 30
+    marginTop: 25,
+    marginBottom: 25
   },
   btnStyle: { borderRadius: 600, height: 60, width: 60 }
 });

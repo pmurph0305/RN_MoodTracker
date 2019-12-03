@@ -65,7 +65,7 @@ export const allIcons = {
     { iconName: "restaurant" },
     { iconName: "drive-eta" },
     { iconName: "grade" },
-    { iconName: "gold-course" },
+    { iconName: "golf-course" },
     { iconName: "local-hospital" },
     { iconName: "hotel" },
     { iconName: "kitchen" },
