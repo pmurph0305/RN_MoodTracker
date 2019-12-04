@@ -3,6 +3,11 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator, BottomTabBar } from "react-navigation-tabs";
 import { createDrawerNavigator } from "react-navigation-drawer";
+import { FontAwesome } from "@expo/vector-icons";
+
+import { ThemeProvider, ThemeConsumer } from "react-native-elements";
+import { useScreens } from "react-native-screens";
+import { theme } from "./themes/themes";
 
 import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -10,11 +15,6 @@ import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
 import NewTagScreen from "./screens/NewTagScreen";
 
-import { FontAwesome } from "@expo/vector-icons";
-
-import { ThemeProvider, ThemeConsumer } from "react-native-elements";
-import { useScreens } from "react-native-screens";
-import { theme } from "./themes/themes";
 useScreens();
 
 // Themed bottom tab bar.

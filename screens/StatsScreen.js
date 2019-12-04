@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  ActivityIndicator
-} from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 
 import MoodStatistics from "../MoodStatistics/MoodStatistics";
 

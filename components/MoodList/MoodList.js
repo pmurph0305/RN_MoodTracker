@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { Card, ListItem, Button } from "react-native-elements";
+import { View } from "react-native";
 
 import MoodCard from "../MoodCard/MoodCard";
 

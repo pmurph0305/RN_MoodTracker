@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Card, withTheme } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
