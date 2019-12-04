@@ -1,58 +1,33 @@
 import React from "react";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import { createBottomTabNavigator, BottomTabBar } from "react-navigation-tabs";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { FontAwesome } from "@expo/vector-icons";
-
-import { ThemeProvider, ThemeConsumer } from "react-native-elements";
+import { ThemeProvider } from "react-native-elements";
 import { useScreens } from "react-native-screens";
-import { theme } from "./themes/themes";
 
 import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
 import NewTagScreen from "./screens/NewTagScreen";
+import ThemedBottomBar from "./navigationComponents/ThemedBottomBar";
+import DrawerMenu from "./navigationComponents/DrawerMenu";
+
+import { theme } from "./themes/themes";
 
 useScreens();
 
-// Themed bottom tab bar.
-class ThemedBottomBar extends React.Component {
-  render() {
-    let { theme } = this.props;
-    return (
-      <ThemeConsumer>
-        {({ theme }) => (
-          <BottomTabBar
-            {...this.props}
-            activeTintColor={theme.colors.primaryDark}
-            inactiveTintColor={theme.colors.primaryDark}
-            activeBackgroundColor={theme.colors.primaryLight}
-            inactiveBackgroundColor={theme.colors.primary}
-          />
-        )}
-      </ThemeConsumer>
-    );
-  }
-}
-
-// Drawer navigator for extra settings/more screen.
-const DrawerNavigator = createDrawerNavigator({
-  NewTag: {
-    screen: NewTagScreen
-  }
-});
-
-// Stack navigator for creating a new entry.
+// Stack navigator for creating a new entry. Rating Screen -> TagScreen -> (optional new tag screen to add tags while rating).
 const NewEntryStack = createStackNavigator(
   {
     NewEntry: RatingScreen,
     NewTag: NewTagScreen,
-    Tags: TagScreen,
-    More: DrawerNavigator
+    Tags: TagScreen
   },
   {
+    // we don't want to display a header.
     headerMode: "none",
     navigationOptions: {
       headerVisible: false,
@@ -63,23 +38,27 @@ const NewEntryStack = createStackNavigator(
 
 // Configuration settings for all the routes (tabs) on the tab bar.
 const routeConfig = {
+  // Will also eventually need a stack navigator, to navigate to editing an entry.
   Entries: {
     screen: HomeScreen,
     navigationOptions: ({ navigation }) => ({
       title: "Entries"
     })
   },
+  // New entry uses the above stack navigator, as it flows through several different screens.
   NewEntry: {
     screen: NewEntryStack,
     navigationOptions: ({ navigation }) => ({
       title: "New Entry"
     })
   },
+  // Will also need a stack navigator eventually to navigate between different stats pages.
   Stats: StatsScreen,
+  // Although we haven't created the drawer yet, pressing this tab will open the we add after creating the tab navigator.
   More: {
-    screen: StatsScreen,
+    screen: HomeScreen, // Screen doesn't matter, this option opens a drawer.
     navigationOptions: ({ navigation }) => ({
-      title: "More...",
+      title: "More",
       tabBarOnPress: () => {
         // Pressing this opens on the tab bar, opens the drawer.
         navigation.openDrawer();
@@ -103,42 +82,39 @@ const NavigatorConfig = {
         iconName = "plus-circle";
       } else if (routeName === "Tags") {
         iconName = "bookmark"; // temporary, should only be accessed through new entries.
+      } else if (routeName === "More") {
+        iconName = "wrench";
       }
       return <FontAwesome name={iconName} size={24} color={tintColor} />;
     }
   }),
   // Our custom themed bar.
   tabBarComponent: ThemedBottomBar,
-  initialRouteName: "Entries",
-  tabBarOptions: {
-    activeBackgroundColor: "#799CF4",
-    inactiveBackgroundColor: "#5e8cff",
-    activeTintColor: "#ffffff",
-    inactiveTintColor: "#f5f5f5",
-    labelStyle: { fontSize: 12 }
-  },
-  headerHideBackButton: true,
-  headerMode: "none",
-  navigationOptions: {
-    headerVisible: false
-  }
+  // Initial route is the homescreen, entries.
+  initialRouteName: "Entries"
 };
 
 // Create a bottom tab navigator from the above routes & configuration settings.
-const AppNavigator = createBottomTabNavigator(routeConfig, NavigatorConfig);
+const BottomTabNavigator = createBottomTabNavigator(
+  routeConfig,
+  NavigatorConfig
+);
 
-// TODO: get the drawer working correctly.
-const Drawer = createDrawerNavigator(
+// Create a drawer navigator that contains the bottom tab navigator, and our component to render the drawer navigator (that opens when the "More" tab is pressed).
+const DrawerNavigator = createDrawerNavigator(
   {
-    Main: AppNavigator
+    BottomTabNavigator
   },
   {
-    drawerPosition: "right"
+    drawerPosition: "right",
+    contentComponent: props => <DrawerMenu {...props} />
   }
 );
 
-const AppContainer = createAppContainer(Drawer);
+// Combine them through the magic of create app container.
+const AppContainer = createAppContainer(DrawerNavigator);
 
+// Wrap our app container in the theme provider to provide the theme.
 export default class App extends React.Component {
   render() {
     return (

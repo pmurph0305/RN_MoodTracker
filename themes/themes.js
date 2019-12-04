@@ -14,6 +14,11 @@ export const theme = {
     primaryText: "#1c1c1c",
     primaryTextLight: "#f5f5f5",
     secondaryText: "#8a8a8a"
+  },
+  tabStyle: {
+    labelStyle: {
+      fontSize: 12
+    }
   }
 };
 // primary: "#799CF4",
