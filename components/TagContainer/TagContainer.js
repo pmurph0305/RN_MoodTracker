@@ -93,8 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 5000,
     borderWidth: 1
-  },
-  iconStyle: { margin: 150 }
+  }
 });
 
 export default withTheme(TagContainer);

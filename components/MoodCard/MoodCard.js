@@ -100,12 +100,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center"
   },
-  icon: {
-    padding: 5
-  },
-  another: {
-    backgroundColor: "green"
-  },
   tagContainer: {
     paddingTop: 5,
     flex: 1,
