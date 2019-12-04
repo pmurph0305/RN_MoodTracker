@@ -1,29 +1,30 @@
 import React, { StrictMode } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Card, ListItem, Button } from "react-native-elements";
+import { Card, withTheme } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MoodCardTag from "../MoodCardTag/MoodCardTag";
 
-export default class MoodList extends React.Component {
+class MoodCard extends React.Component {
   constructor(props) {
     super(props);
   }
 
   getIconColorStyle = rating => {
+    const { theme } = this.props;
     const toBgColor = color => {
       return { backgroundColor: color };
     };
     switch (true) {
       case rating >= 80:
-        return toBgColor("#f1c40f");
+        return toBgColor(theme.colors.primary);
       case rating >= 60:
-        return toBgColor("#2ecc71");
+        return toBgColor(theme.colors.secondary);
       case rating >= 40:
-        return toBgColor("#27ae9c");
+        return toBgColor(theme.colors.tertiary);
       case rating >= 20:
-        return toBgColor("#2781ae");
+        return toBgColor(theme.colors.quaternary);
       default:
-        return toBgColor("#2742ae");
+        return toBgColor(theme.colors.quinary);
     }
   };
 
@@ -44,12 +45,13 @@ export default class MoodList extends React.Component {
 
   render() {
     const { mood } = this.props;
+    let colors = this.getIconColorStyle(mood.rating);
     return (
       <Card wrapperStyle={styles.cardWrapper}>
         <MaterialCommunityIcons
           size={40}
           name={this.getIconName(mood.rating)}
-          color={this.getIconColorStyle(mood.rating).backgroundColor}
+          color={colors.backgroundColor}
         />
 
         <View style={styles.dataContainer}>
@@ -60,15 +62,12 @@ export default class MoodList extends React.Component {
           <View style={styles.tagContainer}>
             {mood.tags &&
               mood.tags.map((tag, index) => {
-                // if (index < 3) {
-                //   return (
-                //     <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />
-                //   );
-                // } else {
-                //   return <Text key={mood.id + "_extra"}>...</Text>;
-                // }
                 return (
-                  <MoodCardTag key={mood.id + "_tag_" + index} tag={tag} />
+                  <MoodCardTag
+                    key={mood.id + "_tag_" + index}
+                    tag={tag}
+                    color={colors.backgroundColor}
+                  />
                 );
               })}
           </View>
@@ -116,3 +115,5 @@ const styles = StyleSheet.create({
   },
   note: {}
 });
+
+export default withTheme(MoodCard);

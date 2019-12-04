@@ -3,8 +3,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 export default class MoodCardTag extends React.Component {
-  getIconForTag = tag => {
-    let color = "#799CF4";
+  getIconForTag = (tag, color) => {
     switch (tag.iconType) {
       case "FontAwesome":
         return (
@@ -37,10 +36,10 @@ export default class MoodCardTag extends React.Component {
   };
 
   render() {
-    let { tag } = this.props;
+    let { tag, color } = this.props;
     return (
       <View style={styles.container}>
-        {this.getIconForTag(tag)}
+        {this.getIconForTag(tag, color)}
         <Text>{tag.displayName}</Text>
       </View>
     );

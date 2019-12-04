@@ -1,10 +1,13 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableWithoutFeedback } from "react-native";
 import { Feather, MaterialIcons, FontAwesome } from "@expo/vector-icons";
-
-export default class TagContainer extends React.Component {
+import { withTheme } from "react-native-elements";
+class TagContainer extends React.Component {
   getIconForTag = (tag, size = 24) => {
-    let color = this.props.isSelected ? "white" : "white";
+    let { theme } = this.props;
+    let color = this.props.isSelected
+      ? theme.colors.primaryTextLight
+      : theme.colors.primaryText;
     switch (tag.iconType) {
       case "FontAwesome":
         return (
@@ -37,7 +40,12 @@ export default class TagContainer extends React.Component {
   };
 
   getFillColor = isSelected => {
-    return { backgroundColor: isSelected ? "#425390" : "#799CF4" };
+    let { theme } = this.props;
+    return {
+      backgroundColor: isSelected
+        ? theme.colors.primaryDark
+        : theme.colors.primaryLight
+    };
   };
 
   render() {
@@ -83,8 +91,10 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5000
-    // borderWidth: 1
+    borderRadius: 5000,
+    borderWidth: 1
   },
   iconStyle: { margin: 150 }
 });
+
+export default withTheme(TagContainer);
