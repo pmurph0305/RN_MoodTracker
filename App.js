@@ -12,6 +12,8 @@ import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
 import NewTagScreen from "./screens/NewTagScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+
 import ThemedBottomBar from "./navigationComponents/ThemedBottomBar";
 import DrawerMenu from "./navigationComponents/DrawerMenu";
 
@@ -103,7 +105,8 @@ const BottomTabNavigator = createBottomTabNavigator(
 // Create a drawer navigator that contains the bottom tab navigator, and our component to render the drawer navigator (that opens when the "More" tab is pressed).
 const DrawerNavigator = createDrawerNavigator(
   {
-    BottomTabNavigator
+    BottomTabNavigator,
+    Settings: SettingsScreen
   },
   {
     drawerPosition: "right",

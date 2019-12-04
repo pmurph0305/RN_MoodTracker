@@ -12,9 +12,9 @@ export default class DrawerMenu extends React.Component {
       <View style={styles.containerStyle}>
         <RectButton
           style={styles.rectButton}
-          onPress={() => this.jumpToSection("NewTag")}
+          onPress={() => this.jumpToSection("Settings")}
         >
-          <Text style={styles.textStyle}>New Tag</Text>
+          <Text style={styles.textStyle}>Settings</Text>
         </RectButton>
         <RectButton onPress={() => this.jumpToSection("Stats")}>
           <Text style={styles.textStyle}>Stats</Text>
