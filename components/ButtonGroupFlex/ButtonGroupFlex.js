@@ -1,13 +1,7 @@
 import React from "react";
-import {
-  Button,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  TouchableOpacity
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { withTheme } from "react-native-elements";
-import ThemePickerDisplay from "../ThemePickerDisplay/ThemePickerDisplay";
+
 const ButtonGroupFlex = props => {
   const { buttons, selectedIndex, onPress, theme } = props;
   const {
