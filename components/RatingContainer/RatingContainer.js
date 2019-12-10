@@ -4,7 +4,8 @@ import { AsyncStorage } from "react-native";
 import { RATING_TYPES } from "../../constants/ratingtypes";
 import {
   SliderWithNumber,
-  SliderHiddenNumber
+  SliderHiddenNumber,
+  DiscreteMoodFaces
 } from "../RatingElements/RatingElements";
 
 export default class RatingContainer extends React.Component {
@@ -23,7 +24,7 @@ export default class RatingContainer extends React.Component {
       if (ratingType !== null) {
         this.setState({ ratingType: ratingType });
       } else {
-        this.setState({ ratingType: RATING_TYPES.SLIDER_WITH_NUMBER });
+        this.setState({ ratingType: RATING_TYPES.DISCRETE_FACE_MOODS });
       }
     } catch (error) {
       console.log("Error", error);
@@ -37,6 +38,8 @@ export default class RatingContainer extends React.Component {
         return (
           <SliderHiddenNumber onChangeRating={onChangeRating} rating={rating} />
         );
+      case RATING_TYPES.DISCRETE_FACE_MOODS:
+        return <DiscreteMoodFaces onChangeRating={onChangeRating} />;
       default:
         return (
           <SliderWithNumber onChangeRating={onChangeRating} rating={rating} />

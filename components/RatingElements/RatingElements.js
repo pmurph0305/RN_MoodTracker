@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Slider, withTheme } from "react-native-elements";
+import { ButtonGroup, Slider, withTheme } from "react-native-elements";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const SliderWithNumber = props => {
   const { onChangeRating, rating, theme } = props;
@@ -45,7 +46,74 @@ const SliderHiddenNumber = props => {
   );
 };
 
+class DiscreteMoodFaces extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedIndex: 2
+    };
+  }
+
+  onSelectMood = index => {
+    this.setState({ selectedIndex: index });
+    this.props.onChangeRating(index * 25);
+  };
+
+  render() {
+    const { theme } = this.props;
+    const buttons = [
+      <MaterialCommunityIcons
+        size={50}
+        name="emoticon-dead"
+        color={theme.colors.quinary}
+      />,
+      <MaterialCommunityIcons
+        size={50}
+        name="emoticon-sad"
+        color={theme.colors.quaternary}
+      />,
+      <MaterialCommunityIcons
+        size={50}
+        name="emoticon-neutral"
+        color={theme.colors.tertiary}
+      />,
+      <MaterialCommunityIcons
+        size={50}
+        name="emoticon-happy"
+        color={theme.colors.secondary}
+      />,
+      <MaterialCommunityIcons
+        size={50}
+        name="emoticon-excited"
+        color={theme.colors.primary}
+      />
+    ];
+    return (
+      <View style={styles.ratingContainer}>
+        <ButtonGroup
+          selectedIndex={this.state.selectedIndex}
+          onPress={this.onSelectMood}
+          buttons={buttons}
+          containerStyle={styles.buttonGroup}
+          buttonStyle={styles.buttonStyle}
+          innerBorderStyle={{ width: 0 }}
+          selectedButtonStyle={{ backgroundColor: theme.colors.primaryLight }}
+        />
+      </View>
+    );
+  }
+}
+
 const styles = StyleSheet.create({
+  buttonGroup: {
+    width: 300,
+    height: 60,
+    borderWidth: 0
+  },
+  buttonStyle: {
+    borderWidth: 0,
+    borderRadius: 50
+  },
   slider: {
     width: 300
   },
@@ -63,5 +131,6 @@ const styles = StyleSheet.create({
 
 module.exports = {
   SliderWithNumber: withTheme(SliderWithNumber),
-  SliderHiddenNumber: withTheme(SliderHiddenNumber)
+  SliderHiddenNumber: withTheme(SliderHiddenNumber),
+  DiscreteMoodFaces: withTheme(DiscreteMoodFaces)
 };
