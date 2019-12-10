@@ -7,6 +7,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import { ThemeProvider } from "react-native-elements";
 import { useScreens } from "react-native-screens";
 
+import ThemeLoader from "./ThemeLoader";
+
 import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
@@ -17,7 +19,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import ThemedBottomBar from "./navigationComponents/ThemedBottomBar";
 import DrawerMenu from "./navigationComponents/DrawerMenu";
 
-import { theme } from "./themes/themes";
+import { theme, getTheme, themeColors } from "./themes/themes";
 
 useScreens();
 
@@ -118,12 +120,15 @@ const DrawerNavigator = createDrawerNavigator(
 const AppContainer = createAppContainer(DrawerNavigator);
 
 // Wrap our app container in the theme provider to provide the theme.
-export default class App extends React.Component {
+class App extends React.Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
         <AppContainer />
+        <ThemeLoader />
       </ThemeProvider>
     );
   }
 }
+
+export default App;

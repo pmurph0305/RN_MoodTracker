@@ -1,11 +1,17 @@
 import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import { AsyncStorage, ScrollView, Text, View } from "react-native";
 import { withTheme, ButtonGroup } from "react-native-elements";
 
 import { themeColors } from "../themes/themes";
 import ThemePickerDisplay from "../components/ThemePickerDisplay/ThemePickerDisplay";
 
 class SettingsScreen extends React.Component {
+  componentDidMount() {
+    this.loadData("themeIndex").then(result => {
+      this.setState({ selectedThemeIndex: parseInt(result) });
+    });
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -17,6 +23,26 @@ class SettingsScreen extends React.Component {
     let { updateTheme } = this.props;
     this.setState({ selectedThemeIndex: index });
     updateTheme({ colors: themeColors[index].colors });
+    this.storeData("themeIndex", index);
+  };
+
+  loadData = async key => {
+    try {
+      const data = await AsyncStorage.getItem("@Settings:" + key);
+      if (data !== null) {
+        return data;
+      }
+    } catch (error) {
+      console.log("Error getting data for key:" + key);
+    }
+  };
+
+  storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem("@Settings:" + key, value.toString());
+    } catch (error) {
+      console.log("Error storing data. Key:" + key + " Value:" + value);
+    }
   };
 
   getButtonGroup = () => {
