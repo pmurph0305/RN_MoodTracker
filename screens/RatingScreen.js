@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Slider, Button } from "react-native-elements";
 import DateTimePicker from "react-native-modal-datetime-picker";
+import RatingContainer from "../components/RatingContainer/RatingContainer";
 
 const DaysOfWeek = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
 const MonthsOfYear = [
@@ -42,6 +43,7 @@ export default class RatingScreen extends React.Component {
   }
 
   onChangeRating = value => {
+    value = parseFloat(value.toFixed(1));
     this.setState({ rating: value });
   };
 
@@ -144,7 +146,7 @@ export default class RatingScreen extends React.Component {
     return (
       <View style={styles.scrollView}>
         <Text style={styles.titleText}>HOW ARE YOU?</Text>
-        <View style={styles.ratingTextContainer}>
+        <View style={styles.ratingDateTimeContainer}>
           <Button
             title={this.state.dateString}
             type="clear"
@@ -193,21 +195,10 @@ export default class RatingScreen extends React.Component {
           onCancel={this.hideTimePicker}
         />
 
-        <View style={styles.ratingContainer}>
-          <Text>{this.state.rating}</Text>
-          <Slider
-            style={styles.slider}
-            value={this.state.rating}
-            minimumValue={0}
-            maximumValue={100}
-            step={0.1}
-            onValueChange={value => this.onChangeRating(value)}
-          />
-          <View style={styles.ratingTextContainer}>
-            <Text>Bad</Text>
-            <Text>Good</Text>
-          </View>
-        </View>
+        <RatingContainer
+          rating={this.state.rating}
+          onChangeRating={this.onChangeRating}
+        />
         <Button
           title="Continue"
           type="solid"
@@ -228,18 +219,12 @@ const styles = StyleSheet.create({
     marginTop: 150
   },
 
-  slider: {
-    width: 300
-  },
-  ratingTextContainer: {
+  ratingDateTimeContainer: {
     fontSize: 12,
     flexDirection: "row",
     justifyContent: "space-between",
     width: 300,
     marginBottom: 50
-  },
-  ratingContainer: {
-    marginBottom: 100
   },
 
   continueButton: {

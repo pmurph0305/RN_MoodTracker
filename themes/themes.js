@@ -13,7 +13,9 @@ export const theme = {
     // text also used for icon fills.
     primaryText: "#1c1c1c",
     primaryTextLight: "#f5f5f5",
-    secondaryText: "#8a8a8a"
+    secondaryText: "#8a8a8a",
+    activeTint: "#171717",
+    inactiveTint: "#f7f7f7"
   },
   tabStyle: {
     labelStyle: {

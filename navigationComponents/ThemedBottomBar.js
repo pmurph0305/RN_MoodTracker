@@ -10,8 +10,8 @@ class ThemedBottomBar extends React.Component {
         {({ theme }) => (
           <BottomTabBar
             {...this.props}
-            activeTintColor={theme.colors.primaryDark}
-            inactiveTintColor={theme.colors.primaryDark}
+            activeTintColor={theme.colors.activeTint}
+            inactiveTintColor={theme.colors.inactiveTint}
             activeBackgroundColor={theme.colors.primaryLight}
             inactiveBackgroundColor={theme.colors.primary}
             labelStyle={theme.tabStyle.labelStyle}
