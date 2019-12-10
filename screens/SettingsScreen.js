@@ -1,6 +1,6 @@
 import React from "react";
 import { AsyncStorage, ScrollView, StyleSheet, Text, View } from "react-native";
-import { withTheme, Card } from "react-native-elements";
+import { withTheme, Button, Card } from "react-native-elements";
 
 import { RATING_TYPES } from "../constants/ratingtypes";
 import { themeColors } from "../themes/themes";
@@ -9,11 +9,13 @@ import ButtonGroupFlex from "../components/ButtonGroupFlex/ButtonGroupFlex";
 
 class SettingsScreen extends React.Component {
   componentDidMount() {
+    // load theme index if it exists
     this.loadData("themeIndex")
       .then(result => {
         this.setState({ selectedThemeIndex: parseInt(result) });
       })
       .catch(error => console.log(error));
+    // load selected rating index if it exists.
     this.loadData("ratingKey")
       .then(result => {
         this.setState({
@@ -109,6 +111,7 @@ class SettingsScreen extends React.Component {
           <Text style={styles.settingsTextLabel}>Rating Method</Text>
           {this.getRatingButtonGroup()}
         </Card>
+        <Button title="Save" onPress={() => this.props.navigation.goBack()} />
       </ScrollView>
     );
   }

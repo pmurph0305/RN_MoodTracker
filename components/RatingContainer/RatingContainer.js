@@ -11,29 +11,41 @@ import {
 export default class RatingContainer extends React.Component {
   constructor(props) {
     super(props);
-    let ratingType = this.getRatingType();
     this.state = {
-      ratingType: ratingType
+      ratingType: ""
     };
   }
 
+  componentDidMount() {
+    this.checkUpdateRatingType();
+  }
+
+  checkUpdateRatingType = () => {
+    this.getRatingType().then(result => {
+      if (this.state.ratingType !== result) {
+        this.setState({ ratingType: result });
+      }
+    });
+  };
+
   getRatingType = async () => {
     try {
-      let ratingType = await AsyncStorage.getItem("@ratingType");
-      console.log("rating type", ratingType);
+      let ratingType = await AsyncStorage.getItem("@Settings:ratingKey");
       if (ratingType !== null) {
-        this.setState({ ratingType: ratingType });
-      } else {
-        this.setState({ ratingType: RATING_TYPES.DISCRETE_FACE_MOODS });
+        return ratingType;
       }
     } catch (error) {
       console.log("Error", error);
     }
   };
 
+  componentWillReceiveProps() {
+    this.checkUpdateRatingType();
+  }
+
   getRatingElement = ratingType => {
     const { onChangeRating, rating } = this.props;
-    switch (ratingType) {
+    switch (RATING_TYPES[ratingType]) {
       case RATING_TYPES.SLIDER_HIDDEN_NUMBER:
         return (
           <SliderHiddenNumber onChangeRating={onChangeRating} rating={rating} />

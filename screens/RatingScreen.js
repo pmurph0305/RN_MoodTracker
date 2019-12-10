@@ -40,6 +40,19 @@ export default class RatingScreen extends React.Component {
     this.setState({ datePicked: date, timePicked: date });
     this.parseDateToString(date);
     this.parseDateToTimeString(date);
+
+    // workaround to prevent needing higher state when changing rating type then going back to rating screen.
+    this.willFocusListener = this.props.navigation.addListener(
+      "willFocus",
+      payload => {
+        this.forceUpdate();
+      }
+    );
+  }
+
+  componentWillUnMount() {
+    //  remove nagivation listener on unmount.
+    this.willFocusListener.remove();
   }
 
   onChangeRating = value => {
