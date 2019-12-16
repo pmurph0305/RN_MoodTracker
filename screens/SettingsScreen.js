@@ -1,5 +1,12 @@
 import React from "react";
-import { AsyncStorage, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  AsyncStorage,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Picker
+} from "react-native";
 import { withTheme, Button, Card } from "react-native-elements";
 
 import { RATING_TYPES } from "../constants/ratingtypes";

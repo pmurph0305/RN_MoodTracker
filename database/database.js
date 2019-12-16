@@ -9,9 +9,6 @@ import {
 
 export default class Database {
   static db = SQLite.openDatabase("MoodDB.db", "0", "Mood Database");
-  constructor() {
-    this.db = SQLite.openDatabase("MoodDB.db", "0", "Mood Database");
-  }
 
   deleteAllTables = () => {
     return this.executeSql("drop table if exists moods;").then(() => {
@@ -90,7 +87,7 @@ export default class Database {
 
   executeFullSql = (sql, params = []) => {
     return new Promise((resolve, reject) => {
-      this.db.transaction(tx => {
+      Database.db.transaction(tx => {
         tx.executeSql(
           sql,
           params,
@@ -105,7 +102,7 @@ export default class Database {
 
   executeSql = async (sql, params = []) => {
     return new Promise((resolve, reject) =>
-      this.db.transaction(tx => {
+      Database.db.transaction(tx => {
         tx.executeSql(
           sql,
           params,
@@ -256,5 +253,16 @@ export default class Database {
         return Promise.resolve(result.rows);
       });
     });
+  };
+
+  deleteMood = moodId => {
+    console.log(moodId);
+    return this.executeFullSql("DELETE FROM moods WHERE id = ?", [moodId]).then(
+      () => {
+        return this.executeFullSql("DELETE FROM tagmap WHERE moodId = ?", [
+          moodId
+        ]);
+      }
+    );
   };
 }

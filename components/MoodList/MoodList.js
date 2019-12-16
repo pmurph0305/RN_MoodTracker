@@ -12,7 +12,13 @@ export default class MoodList extends React.Component {
     let { moods } = this.props;
     if (moods && moods.length > 0) {
       return moods.map((mood, index) => {
-        return <MoodCard key={"mood_" + index} mood={mood} />;
+        return (
+          <MoodCard
+            key={"mood_" + index}
+            mood={mood}
+            onRemoveMood={this.props.onRemoveMood}
+          />
+        );
       });
     } else {
       return <View></View>;

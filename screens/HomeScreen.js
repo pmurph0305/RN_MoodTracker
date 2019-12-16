@@ -165,6 +165,11 @@ export default class HomeScreen extends React.Component {
     this.updateMoodStateForDate(date);
   };
 
+  onRemoveMood = moodId => {
+    let moods = this.state.moods.filter(mood => mood.id !== moodId);
+    this.setState({ moods: moods });
+  };
+
   render() {
     const { moods } = this.state;
     return (
@@ -188,7 +193,7 @@ export default class HomeScreen extends React.Component {
           </View>
         )}
 
-        <MoodsList moods={moods} />
+        <MoodsList moods={moods} onRemoveMood={this.onRemoveMood} />
         <Button title="Reseed" onPress={() => this.reseedDatabase()} />
       </ScrollView>
     );
