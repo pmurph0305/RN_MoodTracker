@@ -10,21 +10,23 @@ const db = new Database();
 export default class TagScreen extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       tags: [],
       selectedTags: [],
       note: "",
       rating: 0,
       date: new Date(),
-      newTagAdded: false
+      newTagAdded: false,
+      moodId: undefined
     };
   }
 
   onNewTagAdded = () => {
-    this.resetTagState();
+    this.resetTagDateRatingState();
   };
 
-  resetTagState = () => {
+  resetTagDateRatingState = () => {
     const { navigation } = this.props;
     let date = navigation.getParam("date");
     let rating = navigation.getParam("rating");
@@ -38,20 +40,21 @@ export default class TagScreen extends React.Component {
     });
   };
 
-  componentDidMount() {
-    this.resetTagState();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let { navigation } = nextProps;
-    let d = navigation.getParam("date");
-    let r = navigation.getParam("rating");
-    if (d !== this.state.date || r !== this.state.rating) {
+  setStateFromNavigationMoodProps = () => {
+    let mood = this.props.navigation.getParam("editedMood");
+    if (mood) {
+      let preselectedTags = mood.tags.map(tag => tag.id);
       this.setState({
-        date: d,
-        rating: r
+        selectedTags: preselectedTags,
+        moodId: mood.id,
+        note: mood.note
       });
     }
+  };
+
+  componentDidMount() {
+    this.resetTagDateRatingState();
+    this.setStateFromNavigationMoodProps();
   }
 
   onIconPress = id => {
@@ -69,33 +72,50 @@ export default class TagScreen extends React.Component {
   };
 
   onSubmitTags = () => {
-    let { rating, date, selectedTags, note } = this.state;
+    let { rating, date, selectedTags, moodId, note } = this.state;
     let mood = {
       rating: rating,
       date: date.toISOString(),
       tags: selectedTags,
-      note: note
+      note: note,
+      id: moodId
     };
-    db.insertMood(mood)
-      .then(result => {
-        // create and dispatch a reset action to reset
-        // the current navigation stack back to top screen.
-        let resetAction = StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({
-              routeName: "NewEntry"
-            })
-          ]
+    if (!mood.id) {
+      db.insertMood(mood)
+        .then(result => {
+          this.resetToEntries();
+        })
+        .catch(error => {
+          //TODO: Display error.
+          console.log("tagscreen new", error);
         });
-        this.props.navigation.dispatch(resetAction);
-        // navigate to different
-        this.props.navigation.navigate("Entries", { hasNewEntry: true });
-      })
-      .catch(error => {
-        //TODO: Display error.
-        console.log("tagscreen", error);
-      });
+    } else {
+      db.updateMood(mood)
+        .then(result => {
+          this.resetToEntries();
+        })
+        .catch(error => {
+          console.log("tagscreen update", error);
+        });
+    }
+  };
+
+  /**
+   * Create and dispatch a reset action to reset
+   * the current navigation stack back to top screen.
+   */
+  resetToEntries = () => {
+    let resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: "NewEntry"
+        })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
+    // navigate to different
+    this.props.navigation.navigate("Entries", { hasNewEntry: true });
   };
 
   render() {
@@ -113,6 +133,7 @@ export default class TagScreen extends React.Component {
         <Input
           onChangeText={text => this.onChangeText(text)}
           placeholder={"Add a note"}
+          value={this.state.note}
         />
         <Button
           containerStyle={styles.btnContainer}

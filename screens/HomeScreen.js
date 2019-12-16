@@ -11,6 +11,7 @@ import { Header } from "react-native-elements";
 import Database from "../database/database";
 import DateNavHeader from "../components/DateNavHeader/DateNavHeader";
 import MoodsList from "../components/MoodList/MoodList.js";
+import { NavigationActions, StackActions } from "react-navigation";
 const db = new Database();
 
 const DaysOfWeek = [
@@ -118,6 +119,7 @@ export default class HomeScreen extends React.Component {
 
   formatMoodDateTime = mood => {
     let date = new Date(mood.date);
+    mood.dbDate = mood.date;
     let dateString =
       DaysOfWeek[date.getDay()] +
       ", " +
@@ -170,6 +172,17 @@ export default class HomeScreen extends React.Component {
     this.setState({ moods: moods });
   };
 
+  onEditMood = mood => {
+    this.props.navigation.navigate({
+      routeName: "NewEntry",
+      params: {},
+      action: NavigationActions.navigate({
+        routeName: "NewEntry",
+        params: { mood: mood }
+      })
+    });
+  };
+
   render() {
     const { moods } = this.state;
     return (
@@ -192,8 +205,11 @@ export default class HomeScreen extends React.Component {
             />
           </View>
         )}
-
-        <MoodsList moods={moods} onRemoveMood={this.onRemoveMood} />
+        <MoodsList
+          moods={moods}
+          onRemoveMood={this.onRemoveMood}
+          onEditMood={this.onEditMood}
+        />
         <Button title="Reseed" onPress={() => this.reseedDatabase()} />
       </ScrollView>
     );

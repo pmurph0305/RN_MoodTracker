@@ -17,6 +17,7 @@ export default class MoodList extends React.Component {
             key={"mood_" + index}
             mood={mood}
             onRemoveMood={this.props.onRemoveMood}
+            onEditMood={this.props.onEditMood}
           />
         );
       });

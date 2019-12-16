@@ -142,6 +142,29 @@ export default class Database {
       });
   };
 
+  updateMood = mood => {
+    return this.executeFullSql(
+      "UPDATE moods SET rating=?, date=?, note=? WHERE id=?",
+      [mood.rating, mood.date, mood.note, mood.id]
+    ).then(result => {
+      // could select, then filter, then delete stuff from tag maps,
+      // or we can delete them all and reinsert them.
+
+      // delete all then reinsert.
+      return this.executeFullSql("DELETE FROM tagmap WHERE moodId = ?", [
+        mood.id
+      ]).then(result => {
+        let promises = [];
+        mood.tags.forEach(tag => {
+          promises.push(this.insertTagMap(mood.id, tag));
+        });
+        return Promise.all(promises).then(() => {
+          return Promise.resolve("Succesfully updated mood " + mood.id);
+        });
+      });
+    });
+  };
+
   insertTag = (iconType, iconData) => {
     return this.executeSql(
       "INSERT OR IGNORE INTO tags(iconType, iconName, displayName) VALUES (?, ?, ?);",
@@ -256,7 +279,6 @@ export default class Database {
   };
 
   deleteMood = moodId => {
-    console.log(moodId);
     return this.executeFullSql("DELETE FROM moods WHERE id = ?", [moodId]).then(
       () => {
         return this.executeFullSql("DELETE FROM tagmap WHERE moodId = ?", [

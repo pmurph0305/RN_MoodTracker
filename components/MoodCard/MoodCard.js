@@ -57,9 +57,14 @@ class MoodCard extends React.Component {
     this.setState({ isSelected: !this.state.isSelected });
   };
 
+  /**
+   * Deselects mood & calls onEditMood prop.
+   */
   onEditPress = () => {
     if (this.state.isSelected) {
       // Navigate to edit mood.
+      this.setState({ isSelected: false });
+      this.props.onEditMood(this.props.mood);
     }
   };
 

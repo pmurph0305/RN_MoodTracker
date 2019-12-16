@@ -31,16 +31,33 @@ export default class RatingScreen extends React.Component {
       isTimePickerVisible: false,
       dateString: "",
       timeString: "",
-      rating: randomRating
+      rating: randomRating,
+      editedMood: undefined
     };
   }
 
-  componentDidMount() {
-    let date = new Date();
-    this.setState({ datePicked: date, timePicked: date });
-    this.parseDateToString(date);
-    this.parseDateToTimeString(date);
+  /**
+   * Uses navigation param "mood" if it exists to set state.
+   */
+  updateStateFromNavigationParams = props => {
+    let mood = props.navigation.getParam("mood");
+    if (mood) {
+      let date = new Date(mood.dbDate);
+      this.setState({
+        datePicked: date,
+        timePicked: date,
+        rating: mood.rating,
+        editedMood: mood
+      });
+      this.parseDateToString(date);
+      this.parseDateToTimeString(date);
+    }
+  };
 
+  componentDidMount() {
+    this.parseDateToString(this.state.datePicked);
+    this.parseDateToTimeString(this.state.timePicked);
+    this.updateStateFromNavigationParams(this.props);
     // workaround to prevent needing higher state when changing rating type then going back to rating screen.
     this.willFocusListener = this.props.navigation.addListener(
       "willFocus",
@@ -48,6 +65,10 @@ export default class RatingScreen extends React.Component {
         this.forceUpdate();
       }
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.updateStateFromNavigationParams(nextProps);
   }
 
   componentWillUnMount() {
@@ -151,7 +172,8 @@ export default class RatingScreen extends React.Component {
     }
     this.props.navigation.navigate("Tags", {
       date: new Date(fullDatePicked),
-      rating: this.state.rating
+      rating: this.state.rating,
+      editedMood: this.state.editedMood
     });
   };
 
