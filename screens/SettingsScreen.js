@@ -88,6 +88,12 @@ class SettingsScreen extends React.Component {
     let components = themeColors.map(theme => {
       return <ThemePickerDisplay theme={theme} />;
     });
+    components.push(
+      <Button
+        title="Add Custom Theme"
+        onPress={() => this.props.navigation.navigate("CustomTheme")}
+      />
+    );
     return this.createButtonGroup(
       components,
       this.onChangeThemeIndex,

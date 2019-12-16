@@ -15,6 +15,7 @@ import TagScreen from "./screens/TagScreen";
 import RatingScreen from "./screens/RatingScreen";
 import NewTagScreen from "./screens/NewTagScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import CustomThemeScreen from "./screens/CustomThemeScreen";
 
 import ThemedBottomBar from "./navigationComponents/ThemedBottomBar";
 import DrawerMenu from "./navigationComponents/DrawerMenu";
@@ -108,7 +109,8 @@ const BottomTabNavigator = createBottomTabNavigator(
 const DrawerNavigator = createDrawerNavigator(
   {
     BottomTabNavigator,
-    Settings: SettingsScreen
+    Settings: SettingsScreen,
+    CustomTheme: CustomThemeScreen
   },
   {
     drawerPosition: "right",
