@@ -1,5 +1,26 @@
 export const moodData = [
   {
+    date: "2020-01-04T11:43:00.000Z",
+    tags: [1, 4, 3, 11],
+    rating: 80
+  },
+  {
+    date: "2020-01-03T14:48:00.000Z",
+    tags: [8, 1, 2],
+    rating: 45.5,
+    note: "good day"
+  },
+  {
+    date: "2020-01-02T12:00:00.000Z",
+    tags: [3, 12, 5],
+    rating: 55
+  },
+  {
+    date: "2020-01-01T09:43:00.000Z",
+    tags: [1, 4, 3],
+    rating: 75
+  },
+  {
     date: "2019-12-02T14:48:00.000Z",
     tags: [8, 1, 2],
     rating: 45.5,

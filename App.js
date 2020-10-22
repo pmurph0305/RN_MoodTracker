@@ -8,7 +8,6 @@ import { ThemeProvider } from "react-native-elements";
 import { useScreens } from "react-native-screens";
 
 import ThemeLoader from "./ThemeLoader";
-
 import StatsScreen from "./screens/StatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import TagScreen from "./screens/TagScreen";
