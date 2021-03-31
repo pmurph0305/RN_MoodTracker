@@ -868,11 +868,6 @@
     pouchdb-collections "^1.0.1"
     tiny-queue "^0.2.1"
 
-"@react-native-community/async-storage@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.7.0.tgz#75e8795cfadef5005228fd1f8a0b0178d50924a2"
-  integrity sha512-6SdZhoS6ykkIPJeJkJ5pwxmRfdQbDILQxRlZLXVzsV0WA9wmcf7FutKXBEX9dlSPbYTbjo7L3xbXQkZXsMzZBA==
-
 "@react-native-community/cli@^1.2.1":
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli/-/cli-1.12.0.tgz#f4cbc2204af63a87d5736d2fa6a018c1fd5efd44"
@@ -4324,6 +4319,14 @@ react-native-calendars@^1.214.0:
     prop-types "^15.5.10"
     xdate "^0.8.0"
 
+react-native-color-picker@^0.4.4:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/react-native-color-picker/-/react-native-color-picker-0.4.6.tgz#ae773ada067e80407cdcb931b606f3d6fdaa61f5"
+  integrity sha512-Uya/ZvAkBQoFtQS+sHMxzzRdPTCTkvsGWj+xCeVKARBuqWfvKp8Zfu1JkJ0+BPQ5mvHkWByQuDeAy3VD8BKBsg==
+  dependencies:
+    prop-types "^15.5.10"
+    tinycolor2 "^1.4.1"
+
 react-native-elements@^1.2.7:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-1.2.7.tgz#1eca2db715c41722aeb67aea62bd2a4621adb134"
@@ -5186,6 +5189,11 @@ tiny-queue@^0.2.1:
   resolved "https://registry.yarnpkg.com/tiny-queue/-/tiny-queue-0.2.1.tgz#25a67f2c6e253b2ca941977b5ef7442ef97a6046"
   integrity sha1-JaZ/LG4lOyypQZd7XvdELvl6YEY=
 
+tinycolor2@^1.4.1:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
+  integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -5542,9 +5550,9 @@ xtend@~4.0.1:
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
 y18n@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.1.tgz#6d15fba884c08679c0d77e88e7759e811e07fa41"
-  integrity sha1-bRX7qITAhnnA136I53WegR4H+kE=
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.2.tgz#85c901bd6470ce71fc4bb723ad209b70f7f28696"
+  integrity sha512-uGZHXkHnhF0XeeAPgnKfPv1bgKAYyVvmNL1xlKsPYZPaIHxGti2hHqvOCQv71XMsLxu1QjergkqogUnms5D3YQ==
 
 yallist@^2.1.2:
   version "2.1.2"
