@@ -868,11 +868,6 @@
     pouchdb-collections "^1.0.1"
     tiny-queue "^0.2.1"
 
-"@react-native-community/async-storage@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.7.0.tgz#75e8795cfadef5005228fd1f8a0b0178d50924a2"
-  integrity sha512-6SdZhoS6ykkIPJeJkJ5pwxmRfdQbDILQxRlZLXVzsV0WA9wmcf7FutKXBEX9dlSPbYTbjo7L3xbXQkZXsMzZBA==
-
 "@react-native-community/cli@^1.2.1":
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli/-/cli-1.12.0.tgz#f4cbc2204af63a87d5736d2fa6a018c1fd5efd44"
@@ -4078,9 +4073,9 @@ path-key@^2.0.0, path-key@^2.0.1:
   integrity sha1-QRyttXTFoUDTpLGRDUDYDMn0C0A=
 
 path-parse@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
-  integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
+  integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
 
 path-to-regexp@^1.7.0:
   version "1.8.0"
@@ -4323,6 +4318,14 @@ react-native-calendars@^1.214.0:
     lodash "^4.0.0"
     prop-types "^15.5.10"
     xdate "^0.8.0"
+
+react-native-color-picker@^0.4.4:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/react-native-color-picker/-/react-native-color-picker-0.4.6.tgz#ae773ada067e80407cdcb931b606f3d6fdaa61f5"
+  integrity sha512-Uya/ZvAkBQoFtQS+sHMxzzRdPTCTkvsGWj+xCeVKARBuqWfvKp8Zfu1JkJ0+BPQ5mvHkWByQuDeAy3VD8BKBsg==
+  dependencies:
+    prop-types "^15.5.10"
+    tinycolor2 "^1.4.1"
 
 react-native-elements@^1.2.7:
   version "1.2.7"
@@ -5185,6 +5188,11 @@ tiny-queue@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/tiny-queue/-/tiny-queue-0.2.1.tgz#25a67f2c6e253b2ca941977b5ef7442ef97a6046"
   integrity sha1-JaZ/LG4lOyypQZd7XvdELvl6YEY=
+
+tinycolor2@^1.4.1:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
+  integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
 tmp@^0.0.33:
   version "0.0.33"
